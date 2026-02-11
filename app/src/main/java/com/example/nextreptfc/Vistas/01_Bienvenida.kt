@@ -147,8 +147,7 @@ fun CarrouselCards(listaCards: List<CardCarrousel>) {
 
                     Text(
                         text = listaCards[numCardActual].numero.toString(),
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.ExtraBold,
+                        fontWeight = FontWeight.ExtraBold
                     )
 
                     Spacer(Modifier.padding(10.dp))
@@ -193,7 +192,7 @@ fun CarrouselCards(listaCards: List<CardCarrousel>) {
                     Spacer(Modifier.padding(20.dp))
 
                     Button(
-                        onClick = {},
+                        onClick = {}, // Te lleva al registro
                         shape = RoundedCornerShape(6.dp),
                         elevation = ButtonDefaults.buttonElevation(
                             defaultElevation = 6.dp,    // En reposo la sombra es de 6.dp
