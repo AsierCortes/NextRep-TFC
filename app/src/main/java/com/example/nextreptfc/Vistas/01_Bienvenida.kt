@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -19,6 +22,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,7 +35,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.nextreptfc.Modelo.CardCarrousel
 import com.example.nextreptfc.R
+import com.example.nextreptfc.ViewModel.NextRepViewModel
 import com.example.nextreptfc.ui.theme.LightSurface
 
 
@@ -43,6 +50,7 @@ import com.example.nextreptfc.ui.theme.LightSurface
                    -> Box   Metemos la imagen dentro de una box para que así no se salga. Lo utilizamos como marco
                         -> Img
                    -> Column
+                        -> Puntos carrousel
                         -> Column
                             -> Text
                             -> Text
@@ -51,7 +59,10 @@ import com.example.nextreptfc.ui.theme.LightSurface
     Para que el weight funcione correctamente el padre debe ser obligatoriamente una column o row
  */
 @Composable
-fun Bienvenida() {
+fun Bienvenida(controller: NextRepViewModel = viewModel()) {
+    val publicModel = controller.publicModelo.collectAsState()
+    val listaCards : List<CardCarrousel> = publicModel.value.listaCardsBienvenida
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,10 +71,32 @@ fun Bienvenida() {
         verticalArrangement = Arrangement.Center
 
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize(0.9f)
+        ){
+            CarrouselCards(listaCards)
+        }
+
+
+    }
+}
+// Me he basado en el siguiente ejemplo: https://proandroiddev.com/swipeable-image-carousel-with-smooth-animations-in-jetpack-compose-76eacdc89bfb
+@Composable
+fun CarrouselCards(listaCards : List <CardCarrousel>){
+
+    val paginadorCards = rememberPagerState { listaCards.size }
+
+    HorizontalPager(
+        state = paginadorCards,
+        modifier = Modifier.fillMaxWidth(),
+    ) { numCardActual ->
+
+
         // Las card para cambiar el colo de fondo utilizamos el atributo Colors, no el Modifier.background
         Card(
             modifier = Modifier
-                .fillMaxSize(0.9f),
+                .fillMaxSize(),
             shape = RectangleShape,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface
@@ -81,12 +114,12 @@ fun Bienvenida() {
 
                 Box(
                     modifier = Modifier
-                        .weight(0.6f)       // 1. La Box reserva el 50% del espacio OBLIGATORIAMENTE
+                        .weight(0.5f)       // 1. La Box reserva el 50% del espacio OBLIGATORIAMENTE
                         .fillMaxWidth(0.9f)
                         .padding(top = 10.dp)
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.img1),
+                        painter = painterResource(listaCards[numCardActual].imagen),
                         contentDescription = "Fotos carrousel",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
@@ -95,7 +128,7 @@ fun Bienvenida() {
 
                 Column(
                     modifier = Modifier
-                        .weight(0.4f)
+                        .weight(0.5f)
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -107,7 +140,7 @@ fun Bienvenida() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Potencia tu análisis deportivo",
+                            text = listaCards[numCardActual].parrafoPrimario,
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.ExtraBold,
                             textAlign = TextAlign.Center,
@@ -117,7 +150,7 @@ fun Bienvenida() {
                         )
 
                         Text(
-                            text = "Explora estadísticas y noticias con la precisión que necesitas para dominar el juego",
+                            text = listaCards[numCardActual].parrafoSecundario,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
@@ -152,9 +185,10 @@ fun Bienvenida() {
                 }
             }
         }
-
     }
 }
+
+
 
 @Composable
 @Preview
