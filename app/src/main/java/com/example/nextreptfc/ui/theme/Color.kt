@@ -23,7 +23,7 @@ val DarkTextSecondary = Color(0xFFB0BEC5)
 val DarkSuccess = Color(0xFF76FF03)
 
 // MODO CLARO (Light Mode)
-val LightBackground = Color(0xFFF0F2F5)
+val LightBackground = Color(0xFFDCE1E5)
 val LightSurface = Color(0xFFFFFFFF)
 val LightInput = Color(0xFFF5F7F9)
 val LightTextPrimary = Color(0xFF1A1A1A)
