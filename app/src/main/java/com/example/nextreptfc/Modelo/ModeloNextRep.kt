@@ -17,5 +17,6 @@ data class ModeloNextRep(
 data class CardCarrousel(
     @DrawableRes val imagen: Int,
     val parrafoPrimario : String = "",
-    val parrafoSecundario : String = ""
+    val parrafoSecundario : String = "",
+    val numero : Int = 0
 )

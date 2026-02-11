@@ -6,19 +6,27 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -61,7 +69,7 @@ import com.example.nextreptfc.ui.theme.LightSurface
 @Composable
 fun Bienvenida(controller: NextRepViewModel = viewModel()) {
     val publicModel = controller.publicModelo.collectAsState()
-    val listaCards : List<CardCarrousel> = publicModel.value.listaCardsBienvenida
+    val listaCards: List<CardCarrousel> = publicModel.value.listaCardsBienvenida
 
     Column(
         modifier = Modifier
@@ -72,18 +80,18 @@ fun Bienvenida(controller: NextRepViewModel = viewModel()) {
 
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxSize(0.9f)
-        ){
+            modifier = Modifier.fillMaxSize(0.9f)
+        ) {
             CarrouselCards(listaCards)
         }
 
 
     }
 }
+
 // Me he basado en el siguiente ejemplo: https://proandroiddev.com/swipeable-image-carousel-with-smooth-animations-in-jetpack-compose-76eacdc89bfb
 @Composable
-fun CarrouselCards(listaCards : List <CardCarrousel>){
+fun CarrouselCards(listaCards: List<CardCarrousel>) {
 
     val paginadorCards = rememberPagerState { listaCards.size }
 
@@ -95,19 +103,15 @@ fun CarrouselCards(listaCards : List <CardCarrousel>){
 
         // Las card para cambiar el colo de fondo utilizamos el atributo Colors, no el Modifier.background
         Card(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             shape = RectangleShape,
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surface
-            ),
-
-            ) {
-
+            )
+        ) {
 
             Column(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -126,16 +130,44 @@ fun CarrouselCards(listaCards : List <CardCarrousel>){
                     )
                 }
 
+                Row(
+                    modifier = Modifier
+                        .weight(0.1f)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ){
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Izquierda",
+                        modifier = Modifier.size(24.dp)
+                    )
+
+                    Spacer(Modifier.padding(10.dp))
+
+                    Text(
+                        text = listaCards[numCardActual].numero.toString(),
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.ExtraBold,
+                    )
+
+                    Spacer(Modifier.padding(10.dp))
+
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = "Derecha",
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
                 Column(
                     modifier = Modifier
-                        .weight(0.5f)
+                        .weight(0.4f)
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -144,8 +176,7 @@ fun CarrouselCards(listaCards : List <CardCarrousel>){
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.ExtraBold,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth(0.9f)
+                            modifier = Modifier.fillMaxWidth(0.9f)
 
                         )
 
@@ -154,8 +185,7 @@ fun CarrouselCards(listaCards : List <CardCarrousel>){
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth(0.9f)
+                            modifier = Modifier.fillMaxWidth(0.9f)
                         )
 
                     }
@@ -169,15 +199,13 @@ fun CarrouselCards(listaCards : List <CardCarrousel>){
                             defaultElevation = 6.dp,    // En reposo la sombra es de 6.dp
                             pressedElevation = 2.dp     // Cuando pulsas la sombre pasa a 2.dp
                         ),
-                        modifier = Modifier
-                            .fillMaxWidth(0.9f)
+                        modifier = Modifier.fillMaxWidth(0.9f)
                     ) {
                         Text(
                             text = "EMPEZAR AHORA >",
                             fontWeight = FontWeight.Bold,
                             color = Color.White,     // Tanto en modo claro como oscuro esta este texto en blanco
-                            modifier = Modifier
-                                .padding(top = 4.dp, bottom = 4.dp)
+                            modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
                         )
                     }
 
@@ -187,7 +215,6 @@ fun CarrouselCards(listaCards : List <CardCarrousel>){
         }
     }
 }
-
 
 
 @Composable

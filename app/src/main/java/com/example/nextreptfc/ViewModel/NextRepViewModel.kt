@@ -23,17 +23,20 @@ class NextRepViewModel : ViewModel(){
             CardCarrousel(
                 imagen = R.drawable.img1, // Pon tus imágenes aquí
                 parrafoPrimario = "Estadísticas de precisión",
-                parrafoSecundario = "Transforma tus datos en decisiones y mejora tu estrategia."
+                parrafoSecundario = "Transforma tus datos en decisiones y mejora tu estrategia.",
+                numero = 1
             ),
             CardCarrousel(
                 imagen = R.drawable.img2,
                 parrafoPrimario = "Tu diario deportivo",
-                parrafoSecundario = "Registra y consulta el historial de todas tus sesiones al instante."
+                parrafoSecundario = "Registra y consulta el historial de todas tus sesiones al instante.",
+                numero = 2
             ),
             CardCarrousel(
                 imagen = R.drawable.img3,
                 parrafoPrimario = "Rompe tus límites",
-                parrafoSecundario = "Visualiza tu evolución histórica y alcanza tu máximo nivel."
+                parrafoSecundario = "Visualiza tu evolución histórica y alcanza tu máximo nivel.",
+                numero = 3
             )
         )
 
