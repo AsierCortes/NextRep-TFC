@@ -70,7 +70,7 @@ import com.example.nextreptfc.ui.theme.LightSurface
     El 0.1 por ciento restante del weight se distribuye en un espacio en blanco
  */
 @Composable
-fun Bienvenida(controller: NextRepViewModel = viewModel()) {
+fun Bienvenida(controller: NextRepViewModel = viewModel(), cambiarVistaRegistro : () -> Unit) {
     val publicModel = controller.publicModelo.collectAsState()
     val listaCards: List<CardCarrousel> = publicModel.value.listaCardsBienvenida
 
@@ -86,7 +86,10 @@ fun Bienvenida(controller: NextRepViewModel = viewModel()) {
         Box(
             modifier = Modifier.fillMaxSize(0.9f)
         ) {
-            CarrouselCards(listaCards)
+            CarrouselCards(
+                listaCards,
+                irARegistro = { cambiarVistaRegistro() } // Aciona la lambda del propio login
+            )
         }
 
 
@@ -95,7 +98,7 @@ fun Bienvenida(controller: NextRepViewModel = viewModel()) {
 
 // Me he basado en el siguiente ejemplo: https://proandroiddev.com/swipeable-image-carousel-with-smooth-animations-in-jetpack-compose-76eacdc89bfb
 @Composable
-fun CarrouselCards(listaCards: List<CardCarrousel>) {
+fun CarrouselCards(listaCards: List<CardCarrousel>, irARegistro : () -> Unit) {
 
     val paginadorCards = rememberPagerState { listaCards.size }
 
@@ -195,7 +198,7 @@ fun CarrouselCards(listaCards: List<CardCarrousel>) {
                     Spacer(Modifier.padding(20.dp))
 
                     Button(
-                        onClick = {}, // Te lleva al registro
+                        onClick = {irARegistro()}, // Te lleva al registro
                         shape = RoundedCornerShape(6.dp),
                         elevation = ButtonDefaults.buttonElevation(
                             defaultElevation = 6.dp,    // En reposo la sombra es de 6.dp
@@ -223,5 +226,5 @@ fun CarrouselCards(listaCards: List<CardCarrousel>) {
 @Composable
 @Preview
 fun PreviewBienvenida() {
-    Bienvenida()
+    //Bienvenida()
 }

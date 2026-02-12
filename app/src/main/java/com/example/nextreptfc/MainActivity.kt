@@ -9,6 +9,7 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -30,7 +31,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NextRepTFCTheme {
-                Registro()
+                Main()
             }
         }
     }
@@ -38,14 +39,54 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun Main(){
+fun Main() {
     val navController = rememberNavController();
 
     // Te dice en que pantalla estas actualmente (Es como un GPS)
     val rutaActual = navController.currentBackStackEntryAsState().value?.destination?.route
 
+    // Scaffold
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        // El Bottom bar se mostrara en todas las pantallas menos el de bienvenida, registro e inicio de sesión
+        bottomBar = {
+            if(rutaActual != "bienvenida" && rutaActual != "registro" && rutaActual != "iniciosesion")
+            BarraNavegacionInferior()
+        }
+    ) { innerPadding ->
+
+        // Ventana de comienzo
+        //initialState.destination.route: Es la pantalla de origen (de dónde vienes).
+        //targetState.destination.route: Es la pantalla de destino (a dónde vas).
+        NavHost(
+            navController = navController,
+            startDestination = "bienvenida",
+            modifier = Modifier.padding(innerPadding),
+
+            // Animación entrada
+            enterTransition = {
+                slideInVertically(
+                    initialOffsetY = { fullHeight -> fullHeight }, // Empieza fuera de pantalla (abajo)
+                    animationSpec = tween(500)  // Medio segundo de animación
+                ) + fadeIn(animationSpec = tween(500))
+            },
+
+            // Animaciñon salida
+            exitTransition = {
+                fadeOut(animationSpec = tween(500))
+            }
+        ) {
+            composable("bienvenida") { Bienvenida(cambiarVistaRegistro = {navController.navigate("registro")}) }
+            composable("registro") { Registro() }
+        }
 
 
+    }
 
+}
+
+
+@Composable
+fun BarraNavegacionInferior() {
 
 }
