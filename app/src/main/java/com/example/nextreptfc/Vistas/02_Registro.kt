@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -17,6 +19,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -28,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,14 +49,6 @@ import com.example.nextreptfc.R
         -> Card (Weight -> 0.7)
             -> Box (Para centrar la columna) (fillMaxSize)
                 -> Column (fillMaxSize()) (fillMaxWidht -> 0.9f, fillMaxHeight) Aqui esta el scroll
-                    -> Row (Entrar y Registrar)
-                        -> Card (fillMaxSize)
-                            -> Box (fillMaxWidht) Para alinear
-                                -> Row (fillMaxWidht)
-                                    -> Button (fillMaxWidth (0.3f)
-                                        -> Text
-                                    -> Button (fillMaxWidth (0.3f)
-                                        -> Text
                     -> Row (Nombre y Apellidos)
                         ->  Column (Nombre) (weight 0.4f)
                             -> Text
@@ -69,21 +65,25 @@ import com.example.nextreptfc.R
                     -> Row (Input + Términos)
                     -> Button
                     -> Text
+                    -> Button (Entrar)
+                    -> Text
                     -> Column
                         -> Card (Google)
-                            -> Row
+                            -> Row (fillMaxWidht)
                                 -> ICON
                                 -> Text
                         -> Card (Apple)
-                            -> Row
+                            -> Row (fillMaxWidht)
                                 -> ICON
                                 -> Text
                         -> Card (Faceebok)
-                            -> Row
+                            -> Row (fillMaxWidht). No es necesario poner una box ya que la rom va a ocupar todoo
                                 -> ICON
                                 -> Text
      Cambio de planteamiento dentro de la column (Card) vamos a meter un scroll, por tanto
-     los weights ya no hacen falta, pierde todoo el sentido
+     los weights ya no hacen falta, pierde todoo el sentido. He hecho cambios respecto a la
+     estructura inicial
+
      Dejamos weitght 0.1 de espacio
 
  */
@@ -94,7 +94,7 @@ fun Registro() {
     var apellidos by remember { mutableStateOf("") }
     var correo by remember { mutableStateOf("") }
     var contrasenia by remember { mutableStateOf("") }
-    var terminos by remember {mutableStateOf(false)}
+    var terminos by remember { mutableStateOf(false) }
 
 
     Column(
@@ -349,19 +349,131 @@ fun Registro() {
                     // REGISTRARSE CON GOOGLE, faceeobkk
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(15.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("Aqui iran las cards GOogle faceboik etcl")
+
+                        // Se que se puede poner un botón pero prefiero hacerlo en una card clickeable
+                        // Google
+                        Card(
+                            onClick = { println("Registrarse con Google") },
+                            modifier = Modifier
+                                .fillMaxWidth(0.7f),
+                            shape = RectangleShape
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+
+                                Icon(
+                                    painter = painterResource(id = R.drawable.google_icon),
+                                    contentDescription = "Google",
+                                    tint = Color.Unspecified,
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .padding(10.dp)
+                                )
+
+                                Spacer(Modifier.padding(2.dp))
+
+                                Text(
+                                    text = "Google",
+                                    modifier = Modifier
+                                        .padding(10.dp),
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+
+                            }
+                        }
                     }
 
 
+                    // Apple
+                    Card(
+                        onClick = { println("Registrarse con Apple") },
+                        modifier = Modifier
+                            .fillMaxWidth(0.7f),
+                        shape = RectangleShape
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+
+                            Icon(
+                                painter = painterResource(id = R.drawable.apple_icon),
+                                contentDescription = "Google",
+                                tint = Color.Unspecified,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .padding(10.dp)
+                            )
+
+                            Spacer(Modifier.padding(2.dp))
+
+                            Text(
+                                text = "Apple",
+                                modifier = Modifier
+                                    .padding(10.dp),
+                                style = MaterialTheme.typography.bodyLarge
+
+                            )
+
+                        }
+                    }
+
+
+                    // Facebook
+                    Card(
+                        onClick = { println("Registrarse con Facebook") },
+                        modifier = Modifier
+                            .fillMaxWidth(0.7f)
+                            .padding(bottom = 35.dp),   // Dejamos espacio abajo
+                        shape = RectangleShape
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+
+                            Icon(
+                                painter = painterResource(id = R.drawable.facebook_icon),
+                                contentDescription = "Google",
+                                tint = Color.Unspecified,
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .padding(10.dp)
+                            )
+
+                            Spacer(Modifier.padding(2.dp))
+
+                            Text(
+                                text = "Facebook",
+                                modifier = Modifier
+                                    .padding(10.dp),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+
+                        }
+                    }
                 }
+
+
             }
         }
-
-
     }
+
+
 }
+
 
 @Composable
 @Preview
