@@ -6,16 +6,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -28,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.nextreptfc.R
@@ -41,7 +45,7 @@ import com.example.nextreptfc.R
         -> Card (Weight -> 0.7)
             -> Box (Para centrar la columna) (fillMaxSize)
                 -> Column (fillMaxSize()) (fillMaxWidht -> 0.9f, fillMaxHeight) Aqui esta el scroll
-                    -> Row (Entrar y Registrar) (Weight 0.1)
+                    -> Row (Entrar y Registrar)
                         -> Card (fillMaxSize)
                             -> Box (fillMaxWidht) Para alinear
                                 -> Row (fillMaxWidht)
@@ -86,12 +90,17 @@ import com.example.nextreptfc.R
 @Composable
 fun Registro() {
     val state = rememberScrollState()   // Para que recuerde en que parte se encuentra
-    var nombre by remember { mutableStateOf("asdfasdf") }
+    var nombre by remember { mutableStateOf("") }
+    var apellidos by remember { mutableStateOf("") }
+    var correo by remember { mutableStateOf("") }
+    var contrasenia by remember { mutableStateOf("") }
+    var terminos by remember {mutableStateOf(false)}
 
 
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
 
@@ -104,6 +113,7 @@ fun Registro() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+
 
             Box(
                 modifier = Modifier
@@ -127,7 +137,10 @@ fun Registro() {
         Card(
             modifier = Modifier
                 .weight(0.7f)
-                .fillMaxSize()
+                .fillMaxSize(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
         ) {
             Box(
                 modifier = Modifier
@@ -137,61 +150,22 @@ fun Registro() {
                 Column(
                     modifier = Modifier
                         .fillMaxSize(0.95f)     // Para que no coche con los bordes
-                        .background(Color.Red)
+                        //.background(Color.Red)
                         .verticalScroll(state),     // Para que sea scrolleable
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
 
-                    // ENTRAR Y REGISTRAR
-                    Row(
+                    Text(
+                        text = "Registro",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.ExtraBold,
+                        textAlign = TextAlign.Center,
+
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize(), // Obligatoriamente la box tiene que ser fillMaxSize, para centrar la row luego
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxSize(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                                ) {
+                            .padding(bottom = 10.dp)    // Le damos un margen inferior extra
+                    )
 
-                                    // BTN ENTRAR
-                                    Button(
-                                        onClick = {},
-                                        modifier = Modifier
-                                            .weight(0.3f)
-                                    ) {
-                                        Text(
-                                            text = "Entrar"
-                                        )
-                                    }
-
-                                    // BTN REGISTRARSE
-                                    Button(
-                                        onClick = {},
-                                        modifier = Modifier
-                                            .weight(0.3f)
-                                    ) {
-                                        Text(
-                                            text = "Registrarse"
-                                        )
-                                    }
-                                }
-                            }
-
-                        }
-                    }
 
                     // Nombre y apellidos
                     Row(
@@ -210,12 +184,16 @@ fun Registro() {
                             horizontalAlignment = Alignment.Start
                         ) {
                             Text(
-                                text = "Nombre"
+                                text = "Nombre",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodyMedium
+
                             )
                             TextField(
                                 value = nombre,
-                                onValueChange = {nombre = it}
-                            )
+                                onValueChange = { nombre = it },
+
+                                )
                         }
 
                         // APELLIDOS
@@ -227,11 +205,15 @@ fun Registro() {
                             horizontalAlignment = Alignment.Start
                         ) {
                             Text(
-                                text = "Apellidos"
+                                text = "Apellidos",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodyMedium
+
+
                             )
                             TextField(
-                                value = "",
-                                onValueChange = {}
+                                value = apellidos,
+                                onValueChange = { apellidos = it }
                             )
 
 
@@ -243,14 +225,25 @@ fun Registro() {
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        Column {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                            horizontalAlignment = Alignment.Start
+                        ) {
                             Text(
-                                text = "Correo Electrónico"
+                                text = "Correo Electrónico",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodyMedium
+
+
                             )
 
                             TextField(
-                                value = "",
-                                onValueChange = {}
+                                value = contrasenia,
+                                onValueChange = { contrasenia = it },
+                                modifier = Modifier
+                                    .fillMaxWidth()
                             )
                         }
 
@@ -261,15 +254,48 @@ fun Registro() {
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(
+                                text = "Contraseña",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodyMedium
+
+
+                            )
+
+                            TextField(
+                                value = "",
+                                onValueChange = {},
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            )
+                        }
 
                     }
 
                     // Términos y condiciones
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
+                        Checkbox(
+                            checked = terminos,
+                            onCheckedChange = { terminos = !terminos }
+                        )
 
+                        Text(
+                            text = "Acepto los Términos y Condiciones y la Política de Privacidad",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodySmall
+
+                        )
                     }
 
                     // BOTON
@@ -284,15 +310,40 @@ fun Registro() {
                         )
                     ) {
                         Text(
-                            text = "CREAR CUENTA"
+                            text = "CREAR CUENTA",
+                            color = Color.White
                         )
                     }
 
+                    Text(
+                        text = "O",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+
+                    // BTN ENTRAR
+                    Button(
+                        onClick = {},
+                        modifier = Modifier
+                            .fillMaxWidth(0.4f),
+                        shape = RoundedCornerShape(6.dp),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 6.dp,    // En reposo la sombra es de 6.dp
+                            pressedElevation = 2.dp     // Cuando pulsas la sombre pasa a 2.dp
+                        )
+                    ) {
+                        Text(
+                            text = "Entrar",
+                            color = Color.White
+                        )
+                    }
+
+
                     // REGISTRARSE PARRAFO
                     Text(
-                        text = "O REGISTRARSE CON",
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        text = "------------- REGISTRARSE CON -------------",
+                        color = MaterialTheme.colorScheme.onSurface
+
                     )
 
                     // REGISTRARSE CON GOOGLE, faceeobkk
