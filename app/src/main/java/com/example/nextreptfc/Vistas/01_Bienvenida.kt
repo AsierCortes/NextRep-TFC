@@ -53,18 +53,21 @@ import com.example.nextreptfc.ui.theme.LightSurface
 /*
     Estructura:
     Column (Centra todoo)
-        -> Card (Ocupa casi todoo)
-               -> Column (Ocupa todoo)
-                   -> Box   Metemos la imagen dentro de una box para que así no se salga. Lo utilizamos como marco
-                        -> Img
-                   -> Column
-                        -> Puntos carrousel
-                        -> Column
-                            -> Text
-                            -> Text
-                        -> Button
+        -> Box (Para centrar el HorizontalPager) (Ocupa fillMaxSize -> 0.9f)
+            -> HorizontalPager (Ocupa todoo)
+                -> Card (Ocupa todoo)
+                       -> Column (Ocupa todoo, usamos card para que de ese efecto)
+                           -> Box (fillMaxWidth -> 0.9f, para que no toque con los bordes) (Weight -> 0.4) Metemos la imagen dentro de una box para que así no se salga. Lo utilizamos como marco
+                                -> Img
+                           -> Row  (fillMaxWidht) (Weight -> 0.1)
+                           -> Column  (fillMaxWidht -> 0.9f) (Weight 0.5)
+                                -> Column (fillMaxWidht)
+                                    -> Text
+                                    -> Text
+                                -> Button (fillMaxWidht)
 
-    Para que el weight funcione correctamente el padre debe ser obligatoriamente una column o row
+    Para que el weight funcione correctamente el padre debe ser obligatoriamente una column o row.
+    El 0.1 por ciento restante del weight se distribuye en un espacio en blanco
  */
 @Composable
 fun Bienvenida(controller: NextRepViewModel = viewModel()) {
@@ -79,6 +82,7 @@ fun Bienvenida(controller: NextRepViewModel = viewModel()) {
         verticalArrangement = Arrangement.Center
 
     ) {
+        // Esta box permite centrar el HorizontalPager, ya que sino este se coloca arriba a la izq
         Box(
             modifier = Modifier.fillMaxSize(0.9f)
         ) {
@@ -97,7 +101,8 @@ fun CarrouselCards(listaCards: List<CardCarrousel>) {
 
     HorizontalPager(
         state = paginadorCards,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxSize(),
     ) { numCardActual ->
 
 
@@ -133,7 +138,7 @@ fun CarrouselCards(listaCards: List<CardCarrousel>) {
                 Row(
                     modifier = Modifier
                         .weight(0.1f)
-                        .fillMaxWidth(),
+                        .fillMaxWidth(0.9f),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ){
@@ -161,12 +166,13 @@ fun CarrouselCards(listaCards: List<CardCarrousel>) {
                 Column(
                     modifier = Modifier
                         .weight(0.4f)
-                        .fillMaxWidth(),
+                        .fillMaxWidth(0.9f),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Column(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -174,17 +180,14 @@ fun CarrouselCards(listaCards: List<CardCarrousel>) {
                             text = listaCards[numCardActual].parrafoPrimario,
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.ExtraBold,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth(0.9f)
-
+                            textAlign = TextAlign.Center
                         )
 
                         Text(
                             text = listaCards[numCardActual].parrafoSecundario,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth(0.9f)
+                            textAlign = TextAlign.Center
                         )
 
                     }
@@ -198,7 +201,8 @@ fun CarrouselCards(listaCards: List<CardCarrousel>) {
                             defaultElevation = 6.dp,    // En reposo la sombra es de 6.dp
                             pressedElevation = 2.dp     // Cuando pulsas la sombre pasa a 2.dp
                         ),
-                        modifier = Modifier.fillMaxWidth(0.9f)
+                        modifier = Modifier
+                            .fillMaxWidth()
                     ) {
                         Text(
                             text = "EMPEZAR AHORA >",

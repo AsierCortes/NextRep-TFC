@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.nextreptfc.Vistas.Bienvenida
+import com.example.nextreptfc.Vistas.Registro
 import com.example.nextreptfc.ui.theme.NextRepTFCTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,7 +30,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NextRepTFCTheme {
-                Bienvenida()
+                Registro()
             }
         }
     }
