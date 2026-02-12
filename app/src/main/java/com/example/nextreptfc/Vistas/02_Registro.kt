@@ -9,12 +9,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,36 +34,38 @@ import com.example.nextreptfc.R
 
 /*
     Column (fillMaxSize)
-        -> Column (Logo y parrafo) (Weight -> 0.25)
+        -> Column (Logo y parrafo) (Weight -> 0.3)
                 -> Box (fillMaxWidth (0.5f))
                     -> Img
                 -> Text
-        -> Card (Weight -> 0.75)
+        -> Card (Weight -> 0.7)
             -> Box (Para centrar la columna) (fillMaxSize)
-                -> Column (fillMaxSize()) (fillMaxWidht -> 0.9f, fillMaxHeight)
+                -> Column (fillMaxSize()) (fillMaxWidht -> 0.9f, fillMaxHeight) Aqui esta el scroll
                     -> Row (Entrar y Registrar) (Weight 0.1)
                         -> Card (fillMaxSize)
-                            -> Box (fillMaxSize) Para alinear
-                                -> Row (fillaMaxSize)
+                            -> Box (fillMaxWidht) Para alinear
+                                -> Row (fillMaxWidht)
                                     -> Button (fillMaxWidth (0.3f)
                                         -> Text
                                     -> Button (fillMaxWidth (0.3f)
                                         -> Text
-                    -> Row (Nombre y Apellidos) (weight 0.1)
-                        -> Column (fillMaxWidth)
-                            ->  Column (Nombre)
-                                -> Text
-                                -> TextField
-                            ->  Column (Apellidos)
-                                -> Text
-                                -> TextField
+                    -> Row (Nombre y Apellidos)
+                        ->  Column (Nombre) (weight 0.4f)
+                            -> Text
+                            -> TextField
+                        ->  Column (Apellidos) (weight 0.4f)
+                            -> Text
+                            -> TextField
 
-                    -> Row (Correo Electronico) (weight 0.1)
-                    -> Row (Contraseña)         (weight 0.1)
-                    -> Row (Input + Términos)   (weight 0.05)
-                    -> Button    (weight 0.1)
-                    -> Text      (weight 0.05)
-                    -> Column    (weight 0.3)
+                    -> Row (Correo Electronico)
+                        -> Column
+                            -> Text
+                            -> TextField
+                    -> Row (Contraseña)
+                    -> Row (Input + Términos)
+                    -> Button
+                    -> Text
+                    -> Column
                         -> Card (Google)
                             -> Row
                                 -> ICON
@@ -68,12 +78,17 @@ import com.example.nextreptfc.R
                             -> Row
                                 -> ICON
                                 -> Text
-
+     Cambio de planteamiento dentro de la column (Card) vamos a meter un scroll, por tanto
+     los weights ya no hacen falta, pierde todoo el sentido
      Dejamos weitght 0.1 de espacio
 
  */
 @Composable
-fun Registro(){
+fun Registro() {
+    val state = rememberScrollState()   // Para que recuerde en que parte se encuentra
+    var nombre by remember { mutableStateOf("asdfasdf") }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -82,9 +97,9 @@ fun Registro(){
 
     ) {
         // COLUMNA LOGO Y PARRAFO
-        Column (
+        Column(
             modifier = Modifier
-                .weight(0.25f)
+                .weight(0.3f)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -93,7 +108,7 @@ fun Registro(){
             Box(
                 modifier = Modifier
                     .fillMaxSize(0.5f)
-            ){
+            ) {
                 Image(
                     painter = painterResource(R.drawable.logosinslogan),
                     contentDescription = "Fotos logo sin slogan",
@@ -109,52 +124,51 @@ fun Registro(){
         }
 
         // CARD (Inputs y todoo lo demás)
-        Card (
+        Card(
             modifier = Modifier
-                .weight(0.75f)
+                .weight(0.7f)
                 .fillMaxSize()
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize(),
                 contentAlignment = Alignment.Center
-            ){  // Para centrar la columna
+            ) {  // Para centrar la columna
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth(0.95f)     // Para que no coche con los bordes
-                        .fillMaxHeight(0.95f)
-                        .background(Color.Red),
+                        .fillMaxSize(0.95f)     // Para que no coche con los bordes
+                        .background(Color.Red)
+                        .verticalScroll(state),     // Para que sea scrolleable
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
 
                     // ENTRAR Y REGISTRAR
                     Row(
                         modifier = Modifier
-                            .weight(0.1f)
-                            .fillMaxSize(),
+                            .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
-                    ){
+                    ) {
                         Card(
                             modifier = Modifier
-                                .fillMaxSize()
+                                .fillMaxWidth()
                         ) {
                             Box(
                                 modifier = Modifier
-                                    .fillMaxSize(),
+                                    .fillMaxSize(), // Obligatoriamente la box tiene que ser fillMaxSize, para centrar la row luego
                                 contentAlignment = Alignment.Center
-                            ){
-                                Row (
+                            ) {
+                                Row(
                                     modifier = Modifier
                                         .fillMaxSize(),
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(10.dp)
-                                ){
+                                ) {
 
                                     // BTN ENTRAR
                                     Button(
-                                        onClick ={},
+                                        onClick = {},
                                         modifier = Modifier
                                             .weight(0.3f)
                                     ) {
@@ -165,7 +179,7 @@ fun Registro(){
 
                                     // BTN REGISTRARSE
                                     Button(
-                                        onClick ={},
+                                        onClick = {},
                                         modifier = Modifier
                                             .weight(0.3f)
                                     ) {
@@ -182,43 +196,85 @@ fun Registro(){
                     // Nombre y apellidos
                     Row(
                         modifier = Modifier
-                            .weight(0.1f)
-                            .fillMaxWidth()
-                    ){
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
 
+                        // NOMBRE
+                        Column(
+                            modifier = Modifier
+                                .weight(0.3f)
+                                .fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(
+                                text = "Nombre"
+                            )
+                            TextField(
+                                value = nombre,
+                                onValueChange = {nombre = it}
+                            )
+                        }
+
+                        // APELLIDOS
+                        Column(
+                            modifier = Modifier
+                                .weight(0.4f)
+                                .fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(
+                                text = "Apellidos"
+                            )
+                            TextField(
+                                value = "",
+                                onValueChange = {}
+                            )
+
+
+                        }
                     }
 
                     // Correo electrónico
                     Row(
                         modifier = Modifier
-                            .weight(0.1f)
                             .fillMaxWidth()
-                    ){
+                    ) {
+                        Column {
+                            Text(
+                                text = "Correo Electrónico"
+                            )
+
+                            TextField(
+                                value = "",
+                                onValueChange = {}
+                            )
+                        }
 
                     }
 
                     // Contraseña
                     Row(
                         modifier = Modifier
-                            .weight(0.1f)
                             .fillMaxWidth()
-                    ){
+                    ) {
 
                     }
 
                     // Términos y condiciones
                     Row(
                         modifier = Modifier
-                            .weight(0.05f)
                             .fillMaxWidth()
-                    ){
+                    ) {
 
                     }
 
                     // BOTON
                     Button(
                         modifier = Modifier
-                            .weight(0.1f)
                             .fillMaxWidth(),
                         onClick = {}, // Te lleva al perfil
                         shape = RoundedCornerShape(6.dp),
@@ -236,18 +292,16 @@ fun Registro(){
                     Text(
                         text = "O REGISTRARSE CON",
                         modifier = Modifier
-                            .weight(0.05f)
+                            .fillMaxWidth()
                     )
 
+                    // REGISTRARSE CON GOOGLE, faceeobkk
                     Column(
                         modifier = Modifier
-                            .weight(0.3f)
-                            .fillMaxSize()
+                            .fillMaxWidth()
                     ) {
                         Text("Aqui iran las cards GOogle faceboik etcl")
                     }
-
-
 
 
                 }
@@ -255,12 +309,11 @@ fun Registro(){
         }
 
 
-
     }
 }
 
 @Composable
 @Preview
-fun PreviewRegistro(){
+fun PreviewRegistro() {
     Registro()
 }
