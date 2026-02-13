@@ -48,7 +48,8 @@ import com.example.nextreptfc.R
                 -> Text
         -> Card (Weight -> 0.7)
             -> Box (Para centrar la columna) (fillMaxSize)
-                -> Column (fillMaxSize()) (fillMaxWidht -> 0.9f, fillMaxHeight) Aqui esta el scroll
+                -> Column (fillMaxSize(0.95f)) Aqui esta el scroll
+                    -> Text
                     -> Row (Nombre y Apellidos)
                         ->  Column (Nombre) (weight 0.4f)
                             -> Text
@@ -88,7 +89,7 @@ import com.example.nextreptfc.R
 
  */
 @Composable
-fun Registro() {
+fun Registro(irAIniciarSesion : () -> Unit) {
     val state = rememberScrollState()   // Para que recuerde en que parte se encuentra
     var nombre by remember { mutableStateOf("") }
     var apellidos by remember { mutableStateOf("") }
@@ -323,9 +324,9 @@ fun Registro() {
 
                     // BTN ENTRAR
                     Button(
-                        onClick = {},
+                        onClick = {irAIniciarSesion()},
                         modifier = Modifier
-                            .fillMaxWidth(0.4f),
+                            .fillMaxWidth(0.5f),
                         shape = RoundedCornerShape(6.dp),
                         elevation = ButtonDefaults.buttonElevation(
                             defaultElevation = 6.dp,    // En reposo la sombra es de 6.dp
@@ -333,7 +334,7 @@ fun Registro() {
                         )
                     ) {
                         Text(
-                            text = "Entrar",
+                            text = "INICIAR SESIÓN",
                             color = Color.White
                         )
                     }
@@ -389,81 +390,84 @@ fun Registro() {
 
                             }
                         }
-                    }
 
-
-                    // Apple
-                    Card(
-                        onClick = { println("Registrarse con Apple") },
-                        modifier = Modifier
-                            .fillMaxWidth(0.7f),
-                        shape = RectangleShape
-                    ) {
-                        Row(
+                        // Apple
+                        Card(
+                            onClick = { println("Registrarse con Apple") },
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
+                                .fillMaxWidth(0.7f),
+                            shape = RectangleShape
                         ) {
-
-                            Icon(
-                                painter = painterResource(id = R.drawable.apple_icon),
-                                contentDescription = "Google",
-                                tint = Color.Unspecified,
+                            Row(
                                 modifier = Modifier
-                                    .size(50.dp)
-                                    .padding(10.dp)
-                            )
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
 
-                            Spacer(Modifier.padding(2.dp))
+                                Icon(
+                                    painter = painterResource(id = R.drawable.apple_icon),
+                                    contentDescription = "Google",
+                                    tint = Color.Unspecified,
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .padding(10.dp)
+                                )
 
-                            Text(
-                                text = "Apple",
-                                modifier = Modifier
-                                    .padding(10.dp),
-                                style = MaterialTheme.typography.bodyLarge
+                                Spacer(Modifier.padding(2.dp))
 
-                            )
+                                Text(
+                                    text = "Apple",
+                                    modifier = Modifier
+                                        .padding(10.dp),
+                                    style = MaterialTheme.typography.bodyLarge
 
+                                )
+
+                            }
                         }
-                    }
 
 
-                    // Facebook
-                    Card(
-                        onClick = { println("Registrarse con Facebook") },
-                        modifier = Modifier
-                            .fillMaxWidth(0.7f)
-                            .padding(bottom = 35.dp),   // Dejamos espacio abajo
-                        shape = RectangleShape
-                    ) {
-                        Row(
+                        // Facebook
+                        Card(
+                            onClick = { println("Registrarse con Facebook") },
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
+                                .fillMaxWidth(0.7f)
+                                .padding(bottom = 35.dp),   // Dejamos espacio abajo
+                            shape = RectangleShape
                         ) {
-
-                            Icon(
-                                painter = painterResource(id = R.drawable.facebook_icon),
-                                contentDescription = "Google",
-                                tint = Color.Unspecified,
+                            Row(
                                 modifier = Modifier
-                                    .size(50.dp)
-                                    .padding(10.dp)
-                            )
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
 
-                            Spacer(Modifier.padding(2.dp))
+                                Icon(
+                                    painter = painterResource(id = R.drawable.facebook_icon),
+                                    contentDescription = "Google",
+                                    tint = Color.Unspecified,
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                        .padding(10.dp)
+                                )
 
-                            Text(
-                                text = "Facebook",
-                                modifier = Modifier
-                                    .padding(10.dp),
-                                style = MaterialTheme.typography.bodyLarge
-                            )
+                                Spacer(Modifier.padding(2.dp))
 
+                                Text(
+                                    text = "Facebook",
+                                    modifier = Modifier
+                                        .padding(10.dp),
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+
+                            }
                         }
+
+
                     }
+
+
                 }
 
 
@@ -478,5 +482,5 @@ fun Registro() {
 @Composable
 @Preview
 fun PreviewRegistro() {
-    Registro()
+    //Registro()
 }
