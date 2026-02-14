@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.nextreptfc.Vistas.Bienvenida
 import com.example.nextreptfc.Vistas.IniciarSesion
+import com.example.nextreptfc.Vistas.Perfil
 import com.example.nextreptfc.Vistas.Registro
 import com.example.nextreptfc.ui.theme.NextRepTFCTheme
 
@@ -78,8 +79,9 @@ fun Main() {
             }
         ) {
             composable("bienvenida") { Bienvenida(cambiarVistaRegistro = {navController.navigate("registro")}) }
-            composable("registro") { Registro(irAIniciarSesion = {navController.navigate("iniciarsesion")}) }
-            composable("iniciarsesion") { IniciarSesion(irARegistro = {navController.navigate("registro")}) }
+            composable("registro") { Registro(irAIniciarSesion = {navController.navigate("iniciarsesion")}, irAPerfil = {navController.navigate("perfil")}) }
+            composable("iniciarsesion") { IniciarSesion(irARegistro = {navController.navigate("registro")}, irAPerfil = {navController.navigate("perfil")}) }
+            composable("perfil") { Perfil() }
 
         }
 

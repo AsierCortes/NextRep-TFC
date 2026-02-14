@@ -87,7 +87,7 @@ import com.example.nextreptfc.R
 
 
 @Composable
-fun IniciarSesion(irARegistro : () -> Unit) {
+fun IniciarSesion(irARegistro : () -> Unit, irAPerfil : () -> Unit) {
     var correo by remember { mutableStateOf("") }
     var contrasenia by remember { mutableStateOf("") }
     val state = rememberScrollState()   // Para que recuerde en que parte se encuentra
@@ -262,7 +262,7 @@ fun IniciarSesion(irARegistro : () -> Unit) {
                     Button(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        onClick = {}, // Te lleva al perfil
+                        onClick = {irAPerfil()}, // Te lleva al perfil
                         shape = RoundedCornerShape(6.dp),
                         elevation = ButtonDefaults.buttonElevation(
                             defaultElevation = 6.dp,    // En reposo la sombra es de 6.dp
