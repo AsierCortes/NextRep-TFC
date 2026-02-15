@@ -3,6 +3,7 @@ package com.example.nextreptfc.Vistas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -170,7 +171,8 @@ fun CardSuperiorFoto() {
                 }
                 // Nombre, apellido y Nombre usuario
                 Column(
-                    modifier = Modifier.fillMaxWidth(0.5f),
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(5.dp)    // Un poco de espacio entre nombre y nombre usuario
                 ) {
@@ -182,10 +184,24 @@ fun CardSuperiorFoto() {
                         fontWeight = FontWeight.ExtraBold
                     )
 
-                    // Nombre Usuario
-                    Text(
-                        text = "@Asier.578"
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ){
+                        // Nombre Usuario
+                        Text(
+                            text = "@Asier.578"
+                        )
+                        Spacer(Modifier.padding(5.dp))
+                        Icon(
+                            painter = painterResource(id = R.drawable.lapizeditar),
+                            contentDescription = "editarnombreusuario",
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+
                 }
 
                 Card(
@@ -430,7 +446,10 @@ fun MedidasYObjetivos() {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
-                            .padding(top = 10.dp, bottom = 10.dp),
+                            .padding(top = 10.dp, bottom = 10.dp)
+                            .clickable{
+                                println("Editar Peso Actual")
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
                     ) {
@@ -481,7 +500,10 @@ fun MedidasYObjetivos() {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
-                            .padding(top = 10.dp, bottom = 10.dp),
+                            .padding(top = 10.dp, bottom = 10.dp)
+                            .clickable{
+                                println("Editar Objetivo")
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
                     ) {
@@ -532,7 +554,10 @@ fun MedidasYObjetivos() {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
-                            .padding(top = 10.dp, bottom = 10.dp),
+                            .padding(top = 10.dp, bottom = 10.dp)
+                            .clickable{
+                                println("Editar Actividad")
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
                     ) {
@@ -583,7 +608,10 @@ fun MedidasYObjetivos() {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
-                            .padding(top = 10.dp, bottom = 10.dp),
+                            .padding(top = 10.dp, bottom = 10.dp)
+                            .clickable{
+                                println("Editar Altura")
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
                     ) {
@@ -634,7 +662,10 @@ fun MedidasYObjetivos() {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
-                            .padding(top = 10.dp, bottom = 10.dp),
+                            .padding(top = 10.dp, bottom = 10.dp)
+                            .clickable{
+                                println("Editar Sexo y edad ")
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
                     ) {
@@ -651,7 +682,7 @@ fun MedidasYObjetivos() {
                                 modifier = Modifier.size(26.dp)
                             )
                             Text(
-                                text = "Sexo / Género",
+                                text = "Sexo / Edad",
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.titleMedium
                             )
@@ -794,7 +825,10 @@ fun CuentaYAjustes(){
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
-                            .padding(top = 10.dp, bottom = 10.dp),
+                            .padding(top = 10.dp, bottom = 10.dp)
+                            .clickable{
+                                println("Editar Unidades")
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
                     ) {
@@ -845,7 +879,10 @@ fun CuentaYAjustes(){
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
-                            .padding(top = 10.dp, bottom = 10.dp),
+                            .padding(top = 10.dp, bottom = 10.dp)
+                            .clickable{
+                                println("Cambiar contraseña")
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
                     ) {
