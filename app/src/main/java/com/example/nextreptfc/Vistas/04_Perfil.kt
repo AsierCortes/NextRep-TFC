@@ -128,6 +128,7 @@ fun Perfil() {
             CardSuperiorFoto()
             DatosCalculados()
             MedidasYObjetivos()
+            CuentaYAjustes()
         }
 
     }
@@ -670,6 +671,7 @@ fun MedidasYObjetivos() {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                                 contentDescription = "Fecha de registro",
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(20.dp)
                             )
 
@@ -683,6 +685,219 @@ fun MedidasYObjetivos() {
 
 @Composable
 fun CuentaYAjustes(){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(0.9f),    // Para que sea igual de ancho que la tarjetas de arriba (IMC, KCAL, AGUA)
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
+
+        Text(
+            text = "CUENTAS Y AJUSTES",
+            modifier = Modifier.align(Alignment.Start)
+        )
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    // Correo
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f) // Para que no toque la card
+                            .padding(top = 10.dp, bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
+                    ) {
+
+                        // Icono y texto IZQ
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),  // Un poco de espacio entre el icono y el text
+
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.correo),
+                                contentDescription = "correo",
+                                modifier = Modifier.size(26.dp)
+                            )
+                            Text(
+                                text = "Correo",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+
+                        // EMAIL
+                        Text(
+                            text = "asier.cortes@gmail.com",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+
+                    HorizontalDivider(thickness = 2.dp)     // https://developer.android.com/develop/ui/compose/components/divider
+
+                    // Vinculada con
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f) // Para que no toque la card
+                            .padding(top = 10.dp, bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
+                    ) {
+
+                        // Icono y texto IZQ
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),  // Un poco de espacio entre el icono y el text
+
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.enlace),
+                                contentDescription = "enlace",
+                                modifier = Modifier.size(26.dp)
+                            )
+                            Text(
+                                text = "Vinculada con",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+
+                        // ICONO
+                        Icon(
+                            painter = painterResource(id = R.drawable.google_icon),
+                            contentDescription = "google",
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
+
+                    HorizontalDivider(thickness = 2.dp)
+
+                    // Unidades
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f) // Para que no toque la card
+                            .padding(top = 10.dp, bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
+                    ) {
+
+                        // Icono y texto IZQ
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),  // Un poco de espacio entre el icono y el text
+
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.medidas),
+                                contentDescription = "unidades",
+                                modifier = Modifier.size(26.dp)
+                            )
+                            Text(
+                                text = "Unidades",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+
+                        // Icono y texto DER
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp)  // Un poco de espacio entre el icono y el text
+                        ) {
+
+                            Text(
+                                text = "Métrico (Kg/Cm)",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = "Flecha der",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+
+                        }
+                    }
+
+                    HorizontalDivider(thickness = 2.dp)
+
+                    // Peso
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f) // Para que no toque la card
+                            .padding(top = 10.dp, bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
+                    ) {
+
+                        // Icono y texto IZQ
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),  // Un poco de espacio entre el icono y el text
+
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.candado),
+                                contentDescription = "candado",
+                                modifier = Modifier.size(26.dp)
+                            )
+                            Text(
+                                text = "Cambiar Contraseña",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+
+                        // Icono y texto DER
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp)  // Un poco de espacio entre el icono y el text
+                        ) {
+
+                            Text(
+                                text = "180 cm",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = "Fecha de registro",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+fun ZonaPeligrosa(){
 
 }
 
