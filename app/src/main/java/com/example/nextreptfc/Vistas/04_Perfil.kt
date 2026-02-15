@@ -2,6 +2,7 @@ package com.example.nextreptfc.Vistas
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,9 +30,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -109,158 +113,176 @@ fun Perfil() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Card(
-            modifier = Modifier
-                .fillMaxSize(0.95f),    // 95% de le la columna general
-            shape = RectangleShape
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .fillMaxHeight()
-                        .verticalScroll(state),     // Para que sea scrolleable
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(30.dp)
-                ) {
-                    DatosPresentacion()
-                    MedidasYObjetivos()
-                }
-            }
+            .background(MaterialTheme.colorScheme.background)
+            .verticalScroll(state),     // Para que sea scrolleable
 
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(30.dp)
+        ) {
+            CardSuperiorFoto()
+            DatosCalculados()
+            MedidasYObjetivos()
         }
 
     }
 }
 
+@Composable
+fun CardSuperiorFoto() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, bottom = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(15.dp)
+            ) {
+                // Foto de Perfil
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.4f)
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.deku),
+                        contentDescription = "Foto de perfil ejemplo",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                // Nombre, apellido y Nombre usuario
+                Column(
+                    modifier = Modifier.fillMaxWidth(0.5f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(5.dp)    // Un poco de espacio entre nombre y nombre usuario
+                ) {
+
+                    // Nombre y apelldio
+                    Text(
+                        text = "Asier Cortés",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+
+                    // Nombre Usuario
+                    Text(
+                        text = "@Asier.578"
+                    )
+                }
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth(0.6f)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(5.dp), // Espacio dentro de la card
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.DateRange,
+                                contentDescription = "Fecha de registro",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+
+                            Text(
+                                text = "Miembro desde 2024", textAlign = TextAlign.Center
+                            )
+
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}
+
 
 @Composable
-fun DatosPresentacion() {
+fun DatosCalculados() {
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp),
+            .fillMaxWidth(0.9f),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        // Foto de Perfil
-        Box(
-            modifier = Modifier.fillMaxWidth(0.4f)
-        ) {
-            Image(
-                painter = painterResource(R.drawable.deku),
-                contentDescription = "Foto de perfil ejemplo",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-        }
-
-        Spacer(Modifier.padding(15.dp))
-
-        // Nombre, apellido y Nombre usuario
-        Column(
-            modifier = Modifier.fillMaxWidth(0.5f),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(5.dp)    // Un poco de espacio entre nombre y nombre usuario
-        ) {
-
-            // Nombre y apelldio
-            Text(
-                text = "Asier Cortés"
-            )
-
-            // Nombre Usuario
-            Text(
-                text = "@Asier.578"
-            )
-        }
-        Spacer(Modifier.padding(10.dp))
-
-        Card(
-            modifier = Modifier
-                .fillMaxWidth(0.6f)
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp), // Espacio dentro de la card
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.DateRange,
-                        contentDescription = "Fecha de registro",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(20.dp)
-                    )
-
-                    Spacer(Modifier.padding(2.dp))      // Un pco de separacion entre el icono y la fecha
-
-                    Text(
-                        text = "Miembro desde 2024", textAlign = TextAlign.Center
-                    )
-
-                }
-            }
-        }
-
-        Spacer(Modifier.padding(10.dp))
 
         // IMC; KCAL Y AGUA
         Row(
             modifier = Modifier
-                .fillMaxWidth(0.9f),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(15.dp)
         ) {
 
+
             // IMC
             Card(
                 modifier = Modifier
                     .weight(0.3f)
-                    .fillMaxWidth()     // Que ocupe todoo lo que pueda respecto al weight
+                    .fillMaxWidth(),     // Que ocupe todoo lo que pueda respecto al weight
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
             ) {
                 Box(
-                    modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth(0.85f)
-                            .align(Alignment.CenterStart)
+                            .fillMaxWidth(0.9f)
                             .padding(top = 10.dp, bottom = 10.dp),    // Un pco de margen tanto arriba como abajo
-
-                        verticalArrangement = Arrangement.Center,
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.corazonicono),
+                            painter = painterResource(id = R.drawable.corazon),
                             contentDescription = "FIcono Corazon",
-                            modifier = Modifier.size(50.dp)
+                            modifier = Modifier.size(32.dp),
+                            tint = Color.Red
                         )
 
-                        Spacer(Modifier.padding(6.dp))
                         Text(
-                            text = "24.5"
+                            text = "24.5",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
 
-                        Spacer(Modifier.padding(4.dp))
 
                         Text(
-                            text = "IMC NORMAL", textAlign = TextAlign.Center
+                            text = "IMC NORMAL",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
                     }
@@ -271,79 +293,99 @@ fun DatosPresentacion() {
             Card(
                 modifier = Modifier
                     .weight(0.3f)
-                    .fillMaxWidth()     // Que ocupe todoo lo que pueda respecto al weight
+                    .fillMaxWidth(),     // Que ocupe todoo lo que pueda respecto al weight
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
             ) {
                 Box(
-                    modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth(0.85f)
-                            .padding(
-                                top = 10.dp, bottom = 10.dp
-                            ),    // Un pco de margen tanto arriba como abajo
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.corazonicono),
-                            contentDescription = "FIcono Corazon",
-                            modifier = Modifier.size(50.dp)
-                        )
-
-                        Spacer(Modifier.padding(6.dp))
-                        Text(
-                            text = "24.5"
-                        )
-
-                        Spacer(Modifier.padding(4.dp))
-
-                        Text(
-                            text = "IMC NORMAL", textAlign = TextAlign.Center
-                        )
-
-                    }
-                }
-            }
-
-
-            // IMC
-            Card(
-                modifier = Modifier
-                    .weight(0.3f)
-                    .fillMaxWidth()     // Que ocupe todoo lo que pueda respecto al weight
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth(0.85f)
-                            .align(Alignment.CenterEnd)
+                            .fillMaxWidth(0.9f)
                             .padding(top = 10.dp, bottom = 10.dp),    // Un pco de margen tanto arriba como abajo
-                        verticalArrangement = Arrangement.Center,
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.corazonicono),
+                            painter = painterResource(id = R.drawable.fuego),
                             contentDescription = "FIcono Corazon",
-                            modifier = Modifier.size(50.dp)
+                            modifier = Modifier.size(32.dp),
+                            tint = MaterialTheme.colorScheme.primary
                         )
 
-                        Spacer(Modifier.padding(6.dp))
                         Text(
-                            text = "24.5"
+                            text = "2400",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
 
-                        Spacer(Modifier.padding(4.dp))
 
                         Text(
-                            text = "IMC NORMAL", textAlign = TextAlign.Center
+                            text = "KCAL META",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
                     }
                 }
             }
+
+
+            // IMC
+            Card(
+                modifier = Modifier
+                    .weight(0.3f)
+                    .fillMaxWidth(),     // Que ocupe todoo lo que pueda respecto al weight
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)
+                            .padding(top = 10.dp, bottom = 10.dp),    // Un pco de margen tanto arriba como abajo
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.gotadeagua),
+                            contentDescription = "FIcono Corazon",
+                            modifier = Modifier.size(32.dp),
+                            tint = Color.Blue
+
+                            )
+
+                        Text(
+                            text = "2.5L",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+
+
+                        Text(
+                            text = "AGUA",
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
+                    }
+                }
+            }
+
+
         }
     }
 
@@ -353,29 +395,40 @@ fun DatosPresentacion() {
 @Composable
 fun MedidasYObjetivos() {
     Column(
-        modifier = Modifier.fillMaxWidth(0.9f),    // Para que sea igual de ancho que la tarjetas de arriba (IMC, KCAL, AGUA)
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxWidth(0.9f),    // Para que sea igual de ancho que la tarjetas de arriba (IMC, KCAL, AGUA)
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
 
         Text(
-            text = "MI CUERPO Y OBJETIVO", modifier = Modifier.align(Alignment.Start)
+            text = "MI CUERPO Y OBJETIVO",
+            modifier = Modifier.align(Alignment.Start)
         )
 
         Card(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
         ) {
             Box(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
             ) {
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
                     // Peso
                     Row(
-                        modifier = Modifier.fillMaxWidth(0.9f), // Para que no toque la card
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f) // Para que no toque la card
+                            .padding(top = 10.dp, bottom = 10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
                     ) {
@@ -383,16 +436,18 @@ fun MedidasYObjetivos() {
                         // Icono y texto IZQ
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(5.dp)  // Un poco de espacio entre el icono y el text
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),  // Un poco de espacio entre el icono y el text
+
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Call,
-                                contentDescription = "Fecha de registro",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(20.dp)
+                                painter = painterResource(id = R.drawable.bascula),
+                                contentDescription = "peso",
+                                modifier = Modifier.size(26.dp)
                             )
                             Text(
-                                text = "Peso Actual"
+                                text = "Peso Actual",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
                             )
                         }
 
@@ -403,7 +458,60 @@ fun MedidasYObjetivos() {
                         ) {
 
                             Text(
-                                text = "80 kg"
+                                text = "80 kg",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = "Fecha de registro",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+
+                        }
+                    }
+
+                    HorizontalDivider(thickness = 2.dp)     // https://developer.android.com/develop/ui/compose/components/divider
+
+                    // Peso
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f) // Para que no toque la card
+                            .padding(top = 10.dp, bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
+                    ) {
+
+                        // Icono y texto IZQ
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),  // Un poco de espacio entre el icono y el text
+
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.objetivo),
+                                contentDescription = "objetivos",
+                                modifier = Modifier.size(26.dp)
+                            )
+                            Text(
+                                text = "Objetivo",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+
+                        // Icono y texto DER
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp)  // Un poco de espacio entre el icono y el text
+                        ) {
+
+                            Text(
+                                text = "Ganar Fuerza",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
                             )
 
                             Icon(
@@ -418,10 +526,11 @@ fun MedidasYObjetivos() {
 
                     HorizontalDivider(thickness = 2.dp)
 
-
-                    // Objetivo
+                    // Peso
                     Row(
-                        modifier = Modifier.fillMaxWidth(0.9f), // Para que no toque la card
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f) // Para que no toque la card
+                            .padding(top = 10.dp, bottom = 10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
                     ) {
@@ -429,16 +538,18 @@ fun MedidasYObjetivos() {
                         // Icono y texto IZQ
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(5.dp)  // Un poco de espacio entre el icono y el text
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),  // Un poco de espacio entre el icono y el text
+
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Call,
-                                contentDescription = "Fecha de registro",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(20.dp)
+                                painter = painterResource(id = R.drawable.actividad),
+                                contentDescription = "actividad",
+                                modifier = Modifier.size(26.dp)
                             )
                             Text(
-                                text = "Objetivo"
+                                text = "Actividad",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
                             )
                         }
 
@@ -449,7 +560,9 @@ fun MedidasYObjetivos() {
                         ) {
 
                             Text(
-                                text = "80 kg"
+                                text = "Moderado (3-5 días)",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
                             )
 
                             Icon(
@@ -461,10 +574,116 @@ fun MedidasYObjetivos() {
 
                         }
                     }
+
+                    HorizontalDivider(thickness = 2.dp)
+
+                    // Peso
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f) // Para que no toque la card
+                            .padding(top = 10.dp, bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
+                    ) {
+
+                        // Icono y texto IZQ
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),  // Un poco de espacio entre el icono y el text
+
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.altura),
+                                contentDescription = "Fecha de registro",
+                                modifier = Modifier.size(26.dp)
+                            )
+                            Text(
+                                text = "Altura",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+
+                        // Icono y texto DER
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp)  // Un poco de espacio entre el icono y el text
+                        ) {
+
+                            Text(
+                                text = "180 cm",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = "Fecha de registro",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(20.dp)
+                            )
+
+                        }
+                    }
+
+                    HorizontalDivider(thickness = 2.dp)
+
+                    // Peso
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f) // Para que no toque la card
+                            .padding(top = 10.dp, bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
+                    ) {
+
+                        // Icono y texto IZQ
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),  // Un poco de espacio entre el icono y el text
+
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.genero),
+                                contentDescription = "genero",
+                                modifier = Modifier.size(26.dp)
+                            )
+                            Text(
+                                text = "Sexo / Género",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+
+                        // Icono y texto DER
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp)  // Un poco de espacio entre el icono y el text
+                        ) {
+
+                            Text(
+                                text = "Hombre, 25",
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                                contentDescription = "Fecha de registro",
+                                modifier = Modifier.size(20.dp)
+                            )
+
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+fun CuentaYAjustes(){
+
 }
 
 @Preview
