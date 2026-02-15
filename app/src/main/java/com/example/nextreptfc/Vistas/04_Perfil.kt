@@ -129,6 +129,7 @@ fun Perfil() {
             DatosCalculados()
             MedidasYObjetivos()
             CuentaYAjustes()
+            ZonaPeligrosa()
         }
 
     }
@@ -898,7 +899,86 @@ fun CuentaYAjustes(){
 
 @Composable
 fun ZonaPeligrosa(){
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(0.9f),    // Para que sea igual de ancho que la tarjetas de arriba (IMC, KCAL, AGUA)
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
 
+        Card(
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+
+                    // Cerrar Sesión
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f) // Para que no toque la card
+                            .padding(top = 10.dp, bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.cerrarsesion),
+                            contentDescription = "cerrar sesion",
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(Modifier.padding(5.dp))
+                        Text(
+                            text = "Cerrar Sesión",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+
+                    }
+
+                    HorizontalDivider(thickness = 2.dp)
+
+                    // Eliminar cuenta
+                    Row(modifier = Modifier
+                        .fillMaxWidth(0.9f) // Para que no toque la card
+                        .padding(top = 10.dp, bottom = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.papelera),
+                            contentDescription = "papelera",
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(Modifier.padding(5.dp))
+
+                        Text(
+                            text = "Eliminar Cuenta",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+
+                    }
+
+                }
+            }
+        }
+    }
 }
 
 @Preview
