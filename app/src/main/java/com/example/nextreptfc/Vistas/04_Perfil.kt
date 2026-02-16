@@ -2,43 +2,51 @@ package com.example.nextreptfc.Vistas
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.example.nextreptfc.R
 
 /*
@@ -111,6 +119,8 @@ import com.example.nextreptfc.R
 fun Perfil() {
     val state = rememberScrollState()   // Para que recuerde en que parte se encuentra
 
+    var editarPeso by remember { mutableStateOf(false) }
+    var editarAltura by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -128,11 +138,32 @@ fun Perfil() {
         ) {
             CardSuperiorFoto()
             DatosCalculados()
-            MedidasYObjetivos()
+            MedidasYObjetivos(
+                editarPeso = { editarPeso = true },
+                editarAltura = {editarAltura = true}
+            )
             CuentaYAjustes()
             ZonaPeligrosa()
         }
 
+    }
+
+    // Ponemos el dialog fuera de la columna por limpieza
+    if (editarPeso) {
+        DialogPeso(
+            pulsarFuera = {editarPeso = false},
+            guardarPeso = { pesoActualizado ->
+                println("Peso guardado: $pesoActualizado")
+            }
+        )
+    }
+    if(editarAltura){
+        DialogAltura(
+            pulsarFuera = {editarAltura = false},
+            guardarAltura = { alturaActualizada ->
+                println("Altura guardada: $alturaActualizada")
+            }
+        )
     }
 }
 
@@ -189,7 +220,7 @@ fun CardSuperiorFoto() {
                             .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
-                    ){
+                    ) {
                         // Nombre Usuario
                         Text(
                             text = "@Asier.578"
@@ -276,7 +307,10 @@ fun DatosCalculados() {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth(0.9f)
-                            .padding(top = 10.dp, bottom = 10.dp),    // Un pco de margen tanto arriba como abajo
+                            .padding(
+                                top = 10.dp,
+                                bottom = 10.dp
+                            ),    // Un pco de margen tanto arriba como abajo
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -290,7 +324,7 @@ fun DatosCalculados() {
                         Text(
                             text = "24.5",
                             style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                            fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
 
@@ -323,7 +357,10 @@ fun DatosCalculados() {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth(0.9f)
-                            .padding(top = 10.dp, bottom = 10.dp),    // Un pco de margen tanto arriba como abajo
+                            .padding(
+                                top = 10.dp,
+                                bottom = 10.dp
+                            ),    // Un pco de margen tanto arriba como abajo
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -337,7 +374,7 @@ fun DatosCalculados() {
                         Text(
                             text = "2400",
                             style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                            fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
 
@@ -371,7 +408,10 @@ fun DatosCalculados() {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth(0.9f)
-                            .padding(top = 10.dp, bottom = 10.dp),    // Un pco de margen tanto arriba como abajo
+                            .padding(
+                                top = 10.dp,
+                                bottom = 10.dp
+                            ),    // Un pco de margen tanto arriba como abajo
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -381,12 +421,12 @@ fun DatosCalculados() {
                             modifier = Modifier.size(32.dp),
                             tint = Color.Blue
 
-                            )
+                        )
 
                         Text(
                             text = "2.5L",
                             style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                            fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
 
@@ -411,7 +451,7 @@ fun DatosCalculados() {
 }
 
 @Composable
-fun MedidasYObjetivos() {
+fun MedidasYObjetivos(editarPeso: () -> Unit, editarAltura : () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth(0.9f),    // Para que sea igual de ancho que la tarjetas de arriba (IMC, KCAL, AGUA)
@@ -447,8 +487,9 @@ fun MedidasYObjetivos() {
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
                             .padding(top = 10.dp, bottom = 10.dp)
-                            .clickable{
+                            .clickable {
                                 println("Editar Peso Actual")
+                                editarPeso()
                             },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
@@ -501,7 +542,7 @@ fun MedidasYObjetivos() {
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
                             .padding(top = 10.dp, bottom = 10.dp)
-                            .clickable{
+                            .clickable {
                                 println("Editar Objetivo")
                             },
                         verticalAlignment = Alignment.CenterVertically,
@@ -555,7 +596,7 @@ fun MedidasYObjetivos() {
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
                             .padding(top = 10.dp, bottom = 10.dp)
-                            .clickable{
+                            .clickable {
                                 println("Editar Actividad")
                             },
                         verticalAlignment = Alignment.CenterVertically,
@@ -609,8 +650,9 @@ fun MedidasYObjetivos() {
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
                             .padding(top = 10.dp, bottom = 10.dp)
-                            .clickable{
+                            .clickable {
                                 println("Editar Altura")
+                                editarAltura()
                             },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
@@ -663,7 +705,7 @@ fun MedidasYObjetivos() {
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
                             .padding(top = 10.dp, bottom = 10.dp)
-                            .clickable{
+                            .clickable {
                                 println("Editar Sexo y edad ")
                             },
                         verticalAlignment = Alignment.CenterVertically,
@@ -716,7 +758,7 @@ fun MedidasYObjetivos() {
 }
 
 @Composable
-fun CuentaYAjustes(){
+fun CuentaYAjustes() {
     Column(
         modifier = Modifier
             .fillMaxWidth(0.9f),    // Para que sea igual de ancho que la tarjetas de arriba (IMC, KCAL, AGUA)
@@ -826,7 +868,7 @@ fun CuentaYAjustes(){
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
                             .padding(top = 10.dp, bottom = 10.dp)
-                            .clickable{
+                            .clickable {
                                 println("Editar Unidades")
                             },
                         verticalAlignment = Alignment.CenterVertically,
@@ -880,7 +922,7 @@ fun CuentaYAjustes(){
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
                             .padding(top = 10.dp, bottom = 10.dp)
-                            .clickable{
+                            .clickable {
                                 println("Cambiar contraseña")
                             },
                         verticalAlignment = Alignment.CenterVertically,
@@ -935,7 +977,7 @@ fun CuentaYAjustes(){
 }
 
 @Composable
-fun ZonaPeligrosa(){
+fun ZonaPeligrosa() {
     Column(
         modifier = Modifier
             .fillMaxWidth(0.9f),    // Para que sea igual de ancho que la tarjetas de arriba (IMC, KCAL, AGUA)
@@ -989,9 +1031,10 @@ fun ZonaPeligrosa(){
                     HorizontalDivider(thickness = 2.dp)
 
                     // Eliminar cuenta
-                    Row(modifier = Modifier
-                        .fillMaxWidth(0.9f) // Para que no toque la card
-                        .padding(top = 10.dp, bottom = 10.dp),
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f) // Para que no toque la card
+                            .padding(top = 10.dp, bottom = 10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
                     ) {
@@ -1014,6 +1057,265 @@ fun ZonaPeligrosa(){
 
                 }
             }
+        }
+    }
+}
+
+
+/*
+    DialoPeso
+        -> Dialog
+            -> Card  En este caso no va haber box por que no lo vamos a centrar verticalmente
+               -> Column (fillMaxWidht, y le damos 20 de padding)
+                        ->Row(fillMaxWidht)
+                            -> Text (Introducir Peso)
+                            -> Icono (Icono estilo info)
+                        -> TextField
+                        -> Row (fillMaxWidht)
+                            -> Button (Guardar)
+                            -> Button (Cancelar)
+ */
+@Composable
+fun DialogPeso(
+    pulsarFuera: () -> Unit,
+    guardarPeso: (String) -> Unit,
+) {
+    var pesoInput by remember { mutableStateOf("") }
+    var infoPeso by remember { mutableStateOf(false) }
+    Dialog(
+        onDismissRequest = { pulsarFuera() }    // Cuando pulsa fuera de la card
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),    // Ya se centra y no toca la card
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+
+                // Titulo e icono
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Introducir Peso",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    IconButton(     //https://developer.android.com/develop/ui/compose/components/icon-button
+                        onClick = {
+                            infoPeso = true
+                            println("Info peso: $infoPeso")
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Info",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                    }
+                }
+
+                // Textfield
+                OutlinedTextField(
+                    value = pesoInput,
+                    onValueChange = { pesoInput = it },
+                    label = { Text("Peso actual") },
+                    placeholder = { Text("Ej: 75.5") },
+                    suffix = { Text("kg") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),  // Unicamente permitimos teclado de tipo numérico
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        cursorColor = MaterialTheme.colorScheme.primary,        // Cursor (Barra)
+                        focusedLabelColor = MaterialTheme.colorScheme.primary   // Color label
+                    )
+                )
+
+                // Botones
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    // Guardar
+                    Button(
+                        onClick = { guardarPeso(pesoInput) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Guardar",
+                            color = Color.White
+                        )
+                    }
+
+                    Spacer(Modifier.padding(10.dp))
+                    // Cancelar
+                    Button(
+                        onClick = { pulsarFuera() },    // es considerado como pulsar fuera
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Cancelar",
+                            color = Color.White
+                        )
+                    }
+
+
+                }
+            }
+
+        }
+    }
+}
+
+
+@Composable
+fun DialogAltura(
+    pulsarFuera: () -> Unit,
+    guardarAltura: (String) -> Unit,
+) {
+    var alturaInput by remember { mutableStateOf("") }
+    var infoAltura by remember { mutableStateOf(false) }
+    Dialog(
+        onDismissRequest = { pulsarFuera() }    // Para salir
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),    // Ya se centra y no toca la card
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+
+                // Titulo e icono
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Introducir Altura",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    IconButton(     //https://developer.android.com/develop/ui/compose/components/icon-button
+                        onClick = {
+                            infoAltura = true
+                            println("Info peso: $infoAltura")
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Info",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                    }
+                }
+
+                // Textfield
+                OutlinedTextField(
+                    value = alturaInput,
+                    onValueChange = { alturaInput = it },
+                    label = { Text("Altura actual") },
+                    placeholder = { Text("Ej: 1.75") },
+                    suffix = { Text("cm") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),  // Unicamente permitimos teclado de tipo numérico
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        cursorColor = MaterialTheme.colorScheme.primary,        // Cursor (Barra)
+                        focusedLabelColor = MaterialTheme.colorScheme.primary   // Color label
+                    )
+                )
+
+                // Botones
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    // Guardar
+                    Button(
+                        onClick = { guardarAltura(alturaInput) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Guardar",
+                            color = Color.White
+                        )
+                    }
+
+                    Spacer(Modifier.padding(10.dp))
+                    // Cancelar
+                    Button(
+                        onClick = { pulsarFuera() },    // Para salir
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Cancelar",
+                            color = Color.White
+                        )
+                    }
+
+
+                }
+            }
+
         }
     }
 }
