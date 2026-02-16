@@ -120,7 +120,11 @@ fun Perfil() {
     val state = rememberScrollState()   // Para que recuerde en que parte se encuentra
 
     var editarPeso by remember { mutableStateOf(false) }
+    var mostrarInfoPeso by remember { mutableStateOf(false) }
+
     var editarAltura by remember { mutableStateOf(false) }
+    var mostrarInfoAltura by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -147,24 +151,38 @@ fun Perfil() {
         }
 
     }
-
+    // PESO
     // Ponemos el dialog fuera de la columna por limpieza
     if (editarPeso) {
         DialogPeso(
             pulsarFuera = {editarPeso = false},
             guardarPeso = { pesoActualizado ->
                 println("Peso guardado: $pesoActualizado")
-            }
+            },
+            infoPesoPulsado = { mostrarInfoPeso = true }
         )
     }
+    if(mostrarInfoPeso){
+        DialogInfoPeso(salirInfoPeso = {mostrarInfoPeso = false})
+    }
+
+
+    // ALTURA
     if(editarAltura){
         DialogAltura(
             pulsarFuera = {editarAltura = false},
             guardarAltura = { alturaActualizada ->
                 println("Altura guardada: $alturaActualizada")
-            }
+            },
+            infoAlturaPulsado = {mostrarInfoAltura = true}
         )
     }
+    if(mostrarInfoAltura){
+        DialogInfoAltura(
+            salirInfoAltura = {mostrarInfoAltura = false}
+        )
+    }
+
 }
 
 @Composable
@@ -1079,9 +1097,9 @@ fun ZonaPeligrosa() {
 fun DialogPeso(
     pulsarFuera: () -> Unit,
     guardarPeso: (String) -> Unit,
+    infoPesoPulsado : () -> Unit
 ) {
     var pesoInput by remember { mutableStateOf("") }
-    var infoPeso by remember { mutableStateOf(false) }
     Dialog(
         onDismissRequest = { pulsarFuera() }    // Cuando pulsa fuera de la card
     ) {
@@ -1118,10 +1136,7 @@ fun DialogPeso(
                     )
 
                     IconButton(     //https://developer.android.com/develop/ui/compose/components/icon-button
-                        onClick = {
-                            infoPeso = true
-                            println("Info peso: $infoPeso")
-                        }
+                        onClick = {infoPesoPulsado()}
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Info,
@@ -1202,9 +1217,11 @@ fun DialogPeso(
 fun DialogAltura(
     pulsarFuera: () -> Unit,
     guardarAltura: (String) -> Unit,
+    infoAlturaPulsado : () -> Unit
+
 ) {
     var alturaInput by remember { mutableStateOf("") }
-    var infoAltura by remember { mutableStateOf(false) }
+
     Dialog(
         onDismissRequest = { pulsarFuera() }    // Para salir
     ) {
@@ -1241,17 +1258,14 @@ fun DialogAltura(
                     )
 
                     IconButton(     //https://developer.android.com/develop/ui/compose/components/icon-button
-                        onClick = {
-                            infoAltura = true
-                            println("Info peso: $infoAltura")
-                        }
+                        onClick = {infoAlturaPulsado()}
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Info,
                             contentDescription = "Info",
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
-                                .size(24.dp)
+                                .size(26.dp)
                         )
                     }
                 }
@@ -1319,6 +1333,167 @@ fun DialogAltura(
         }
     }
 }
+@Composable
+fun DialogInfoPeso(salirInfoPeso : () -> Unit){
+    Dialog(
+        onDismissRequest = {salirInfoPeso()}
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "Info",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+
+                Text(
+                    text = "¿Por que necesitamos este dato?",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.titleLarge
+
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Tu peso corporal es un dato necesario para poder sacar los siguientes datos:",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Justify
+                    )
+
+                    Text(
+                        text = "• Calcular tus Calorías de Mantenimiento.\n" +
+                                "• Ajustar tus gramos de proteína.\n" +
+                                "• Definir tu hidratación ideal.\n\n" +
+                                "Es solo un dato matemático para calibrar tu plan.",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+
+
+                Button(
+                    onClick = {salirInfoPeso()},     // Cuando pulse aqui saldrá del dialog informativo
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Continuar"
+                    )
+                }
+
+
+
+
+            }
+        }
+    }
+}
+
+@Composable
+fun DialogInfoAltura(salirInfoAltura : () -> Unit){
+    Dialog(
+        onDismissRequest = {salirInfoAltura()}
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "Info",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+
+                Text(
+                    text = "¿Por que necesitamos este dato?",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.titleLarge
+
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Tu altura aporta el contexto necesario para que los cálculos sean precisos:",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    Text(
+                        text = "• Índice de Masa Corporal (IMC): El peso por sí solo es un dato incompleto. Al cruzarlo con tu altura, " +
+                                "calculamos tu IMC para saber si te encuentras en un rango saludable.\n \n" +
+                                "• Gasto Calórico: La altura influye directamente en tu metabolismo basal. Un cuerpo más grande consume " +
+                                "más energía en reposo, y necesitamos este dato para no darte menos comida de la que necesitas.\n \n" +
+                                "• Objetivos Reales: Nos permite sugerirte un peso objetivo que sea realista y sostenible para tu estructura física.\n",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Justify
+                    )
+                }
+
+
+                Button(
+                    onClick = {salirInfoAltura()},     // Cuando pulse aqui saldrá del dialog informativo
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Continuar"
+                    )
+                }
+
+
+
+
+            }
+        }
+    }
+}
+
 
 @Preview
 @Composable
