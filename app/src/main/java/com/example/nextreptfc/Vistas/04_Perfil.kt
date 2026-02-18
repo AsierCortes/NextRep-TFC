@@ -131,8 +131,8 @@ fun Perfil() {
     var editarAltura by remember { mutableStateOf(false) }
     var mostrarInfoAltura by remember { mutableStateOf(false) }
 
-    var editarGeneroYEdad by remember {mutableStateOf(false)}
-    var mostrarInfoGeneroYEdad by remember {mutableStateOf(false)}
+    var editarGeneroYEdad by remember { mutableStateOf(false) }
+    var mostrarInfoGeneroYEdad by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -194,14 +194,14 @@ fun Perfil() {
     }
 
     // GÉNERO Y EDAD
-    if(editarGeneroYEdad){
+    if (editarGeneroYEdad) {
         DialogGeneroYEdad(
-            pulsarFuera = {editarGeneroYEdad = false},
+            pulsarFuera = { editarGeneroYEdad = false },
             infoGeneroYEdad = {},
             guardarGeneroYAltura = { genero, edad ->
                 println("Genero y edad guardados: $genero, $edad")
             }
-        ) 
+        )
     }
 
 
@@ -494,9 +494,9 @@ fun DatosCalculados() {
 fun MedidasYObjetivos(
     editarPeso: () -> Unit,
     editarAltura: () -> Unit,
-    editarGeneroYEdad: () -> Unit
+    editarGeneroYEdad: () -> Unit,
 
-) {
+    ) {
     Column(
         modifier = Modifier
             .fillMaxWidth(0.9f),    // Para que sea igual de ancho que la tarjetas de arriba (IMC, KCAL, AGUA)
@@ -1367,12 +1367,11 @@ fun DialogAltura(
 fun DialogGeneroYEdad(
     pulsarFuera: () -> Unit,
     infoGeneroYEdad: () -> Unit,
-    guardarGeneroYAltura: (String, Int) -> Unit
+    guardarGeneroYAltura: (String, Int) -> Unit,
 ) {
     val generos = listOf("Masculino", "Femenino")
     val (opcionSeleccionada, gestionarOpcionSeleccionada) = remember { mutableStateOf(generos[0]) }     // Empieza con Masculino seleccionado
-    var inputEdad by remember { mutableIntStateOf(0) }
-    var inputEdadString by remember { mutableStateOf(inputEdad.toString()) }
+    var inputEdad by remember { mutableStateOf("") }
 
     Dialog(
         onDismissRequest = { pulsarFuera() }    // Para salir
@@ -1473,7 +1472,7 @@ fun DialogGeneroYEdad(
                     modifier = Modifier
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
-                ){
+                ) {
                     Text(
                         text = "Edad:",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -1482,11 +1481,19 @@ fun DialogGeneroYEdad(
 
                     // INPUT edad
                     OutlinedTextField(
-                        value = inputEdadString,    // No le daba tiempo a convertilo a string antes de pintar la pantalla, por eso he creado otra variable
-                        onValueChange = {valorIntroducido ->
-                            inputEdad = valorIntroducido.toInt()
-                            inputEdadString = valorIntroducido
-                                        },   // Pinta de tipo sting
+                        value = inputEdad,
+                        onValueChange = { valorIntroducido ->
+                            /*
+                                Con el .all es una lambda que recorre cada caracter del string, y comprueba que
+                                todos ellos sean digitos, si todos ellos son dígitos y además no supera la longuitud de 3
+                                entonces (999). Y el número tiene que ser menos o igual que 125 (humano mas longevo 122)
+                             */
+                            if (valorIntroducido.all { cadaValor -> cadaValor.isDigit() } && valorIntroducido.length <= 3 && valorIntroducido.toInt() <= 125) {
+                                inputEdad = valorIntroducido
+                            } else {
+                                println("Edad introducida no valida")
+                            }
+                        },
                         label = { Text("Edad actual") },
                         placeholder = { Text("Ej: 20") },
                         suffix = { Text("años") },
@@ -1505,7 +1512,6 @@ fun DialogGeneroYEdad(
 
 
                 }
-
 
 
                 // Botones
@@ -1552,7 +1558,6 @@ fun DialogGeneroYEdad(
     }
 
 }
-
 
 
 @Composable
