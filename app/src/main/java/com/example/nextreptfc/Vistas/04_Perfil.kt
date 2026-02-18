@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -30,9 +33,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -41,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -125,6 +131,9 @@ fun Perfil() {
     var editarAltura by remember { mutableStateOf(false) }
     var mostrarInfoAltura by remember { mutableStateOf(false) }
 
+    var editarGeneroYEdad by remember {mutableStateOf(false)}
+    var mostrarInfoGeneroYEdad by remember {mutableStateOf(false)}
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -144,7 +153,8 @@ fun Perfil() {
             DatosCalculados()
             MedidasYObjetivos(
                 editarPeso = { editarPeso = true },
-                editarAltura = {editarAltura = true}
+                editarAltura = { editarAltura = true },
+                editarGeneroYEdad = { editarGeneroYEdad = true }
             )
             CuentaYAjustes()
             ZonaPeligrosa()
@@ -155,33 +165,45 @@ fun Perfil() {
     // Ponemos el dialog fuera de la columna por limpieza
     if (editarPeso) {
         DialogPeso(
-            pulsarFuera = {editarPeso = false},
+            pulsarFuera = { editarPeso = false },
             guardarPeso = { pesoActualizado ->
                 println("Peso guardado: $pesoActualizado")
             },
             infoPesoPulsado = { mostrarInfoPeso = true }
         )
     }
-    if(mostrarInfoPeso){
-        DialogInfoPeso(salirInfoPeso = {mostrarInfoPeso = false})
+    if (mostrarInfoPeso) {
+        DialogInfoPeso(salirInfoPeso = { mostrarInfoPeso = false })
     }
 
 
     // ALTURA
-    if(editarAltura){
+    if (editarAltura) {
         DialogAltura(
-            pulsarFuera = {editarAltura = false},
+            pulsarFuera = { editarAltura = false },
             guardarAltura = { alturaActualizada ->
                 println("Altura guardada: $alturaActualizada")
             },
-            infoAlturaPulsado = {mostrarInfoAltura = true}
+            infoAlturaPulsado = { mostrarInfoAltura = true }
         )
     }
-    if(mostrarInfoAltura){
+    if (mostrarInfoAltura) {
         DialogInfoAltura(
-            salirInfoAltura = {mostrarInfoAltura = false}
+            salirInfoAltura = { mostrarInfoAltura = false }
         )
     }
+
+    // GÉNERO Y EDAD
+    if(editarGeneroYEdad){
+        DialogGeneroYEdad(
+            pulsarFuera = {editarGeneroYEdad = false},
+            infoGeneroYEdad = {},
+            guardarGeneroYAltura = { genero, edad ->
+                println("Genero y edad guardados: $genero, $edad")
+            }
+        ) 
+    }
+
 
 }
 
@@ -469,7 +491,12 @@ fun DatosCalculados() {
 }
 
 @Composable
-fun MedidasYObjetivos(editarPeso: () -> Unit, editarAltura : () -> Unit) {
+fun MedidasYObjetivos(
+    editarPeso: () -> Unit,
+    editarAltura: () -> Unit,
+    editarGeneroYEdad: () -> Unit
+
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth(0.9f),    // Para que sea igual de ancho que la tarjetas de arriba (IMC, KCAL, AGUA)
@@ -724,6 +751,7 @@ fun MedidasYObjetivos(editarPeso: () -> Unit, editarAltura : () -> Unit) {
                             .fillMaxWidth(0.9f) // Para que no toque la card
                             .padding(top = 10.dp, bottom = 10.dp)
                             .clickable {
+                                editarGeneroYEdad()
                                 println("Editar Sexo y edad ")
                             },
                         verticalAlignment = Alignment.CenterVertically,
@@ -1097,7 +1125,7 @@ fun ZonaPeligrosa() {
 fun DialogPeso(
     pulsarFuera: () -> Unit,
     guardarPeso: (String) -> Unit,
-    infoPesoPulsado : () -> Unit
+    infoPesoPulsado: () -> Unit,
 ) {
     var pesoInput by remember { mutableStateOf("") }
     Dialog(
@@ -1136,7 +1164,7 @@ fun DialogPeso(
                     )
 
                     IconButton(     //https://developer.android.com/develop/ui/compose/components/icon-button
-                        onClick = {infoPesoPulsado()}
+                        onClick = { infoPesoPulsado() }
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Info,
@@ -1217,9 +1245,9 @@ fun DialogPeso(
 fun DialogAltura(
     pulsarFuera: () -> Unit,
     guardarAltura: (String) -> Unit,
-    infoAlturaPulsado : () -> Unit
+    infoAlturaPulsado: () -> Unit,
 
-) {
+    ) {
     var alturaInput by remember { mutableStateOf("") }
 
     Dialog(
@@ -1258,7 +1286,7 @@ fun DialogAltura(
                     )
 
                     IconButton(     //https://developer.android.com/develop/ui/compose/components/icon-button
-                        onClick = {infoAlturaPulsado()}
+                        onClick = { infoAlturaPulsado() }
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.Info,
@@ -1333,10 +1361,204 @@ fun DialogAltura(
         }
     }
 }
+
+
 @Composable
-fun DialogInfoPeso(salirInfoPeso : () -> Unit){
+fun DialogGeneroYEdad(
+    pulsarFuera: () -> Unit,
+    infoGeneroYEdad: () -> Unit,
+    guardarGeneroYAltura: (String, Int) -> Unit
+) {
+    val generos = listOf("Masculino", "Femenino")
+    val (opcionSeleccionada, gestionarOpcionSeleccionada) = remember { mutableStateOf(generos[0]) }     // Empieza con Masculino seleccionado
+    var inputEdad by remember { mutableIntStateOf(0) }
+    var inputEdadString by remember { mutableStateOf(inputEdad.toString()) }
+
     Dialog(
-        onDismissRequest = {salirInfoPeso()}
+        onDismissRequest = { pulsarFuera() }    // Para salir
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),    // Ya se centra y no toca la card
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+
+                // Titulo e icono
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Género y Edad",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    IconButton(     //https://developer.android.com/develop/ui/compose/components/icon-button
+                        onClick = { infoGeneroYEdad() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Info",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(26.dp)
+                        )
+                    }
+                }
+
+                // Radio Options: https://developer.android.com/develop/ui/compose/components/radio-button
+
+                /*
+                    Esto se considera declaración de desestructurada, basicamente el opcionSeleccionada es el String, y
+                    gestionarOpcionSeleccionada es una lambda que se encarga de cambiar el valor de la variable opcionSeleccionada
+                    dependiendo si el usuario ha pulsado una u otra opción.
+                 */
+                // Note that Modifier.selectableGroup() is essential to ensure correct accessibility behavior
+
+                // Genero
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectableGroup(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    generos.forEach { text ->
+                        // se selecciona la row y se repinta la pantalla, pareciendo que has pulsado el radiobutton
+                        Row(
+                            Modifier
+                                .height(56.dp)
+                                .selectable(
+                                    selected = (text == opcionSeleccionada),
+                                    onClick = { gestionarOpcionSeleccionada(text) },    // justo aqui esta la lambda
+                                    role = Role.RadioButton
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            RadioButton(
+                                selected = (text == opcionSeleccionada),  // Si el texto es igual a opcionesSeleccionada este se pone en true
+                                onClick = null // null recommended for accessibility with screen readers
+                            )
+                            // Texto: (Masculino o femenino)
+                            Text(
+                                text = text,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+
+
+                        }
+                    }
+                }
+
+                // EDAD
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ){
+                    Text(
+                        text = "Edad:",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    // INPUT edad
+                    OutlinedTextField(
+                        value = inputEdadString,    // No le daba tiempo a convertilo a string antes de pintar la pantalla, por eso he creado otra variable
+                        onValueChange = {valorIntroducido ->
+                            inputEdad = valorIntroducido.toInt()
+                            inputEdadString = valorIntroducido
+                                        },   // Pinta de tipo sting
+                        label = { Text("Edad actual") },
+                        placeholder = { Text("Ej: 20") },
+                        suffix = { Text("años") },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),  // Unicamente permitimos teclado de tipo numérico
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                            cursorColor = MaterialTheme.colorScheme.primary,        // Cursor (Barra)
+                            focusedLabelColor = MaterialTheme.colorScheme.primary   // Color label
+                        )
+                    )
+
+
+                }
+
+
+
+                // Botones
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    // Guardar
+                    Button(
+                        onClick = { guardarGeneroYAltura(opcionSeleccionada, 0) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Guardar",
+                            color = Color.White
+                        )
+                    }
+
+                    Spacer(Modifier.padding(10.dp))
+                    // Cancelar
+                    Button(
+                        onClick = { pulsarFuera() },    // Para salir
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Cancelar",
+                            color = Color.White
+                        )
+                    }
+
+
+                }
+            }
+
+        }
+    }
+
+}
+
+
+
+@Composable
+fun DialogInfoPeso(salirInfoPeso: () -> Unit) {
+    Dialog(
+        onDismissRequest = { salirInfoPeso() }
     ) {
         Card(
             shape = RoundedCornerShape(16.dp),
@@ -1394,7 +1616,7 @@ fun DialogInfoPeso(salirInfoPeso : () -> Unit){
 
 
                 Button(
-                    onClick = {salirInfoPeso()},     // Cuando pulse aqui saldrá del dialog informativo
+                    onClick = { salirInfoPeso() },     // Cuando pulse aqui saldrá del dialog informativo
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                     ),
@@ -1406,17 +1628,15 @@ fun DialogInfoPeso(salirInfoPeso : () -> Unit){
                 }
 
 
-
-
             }
         }
     }
 }
 
 @Composable
-fun DialogInfoAltura(salirInfoAltura : () -> Unit){
+fun DialogInfoAltura(salirInfoAltura: () -> Unit) {
     Dialog(
-        onDismissRequest = {salirInfoAltura()}
+        onDismissRequest = { salirInfoAltura() }
     ) {
         Card(
             shape = RoundedCornerShape(16.dp),
@@ -1475,7 +1695,7 @@ fun DialogInfoAltura(salirInfoAltura : () -> Unit){
 
 
                 Button(
-                    onClick = {salirInfoAltura()},     // Cuando pulse aqui saldrá del dialog informativo
+                    onClick = { salirInfoAltura() },     // Cuando pulse aqui saldrá del dialog informativo
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                     ),
@@ -1485,8 +1705,6 @@ fun DialogInfoAltura(salirInfoAltura : () -> Unit){
                         text = "Continuar"
                     )
                 }
-
-
 
 
             }
