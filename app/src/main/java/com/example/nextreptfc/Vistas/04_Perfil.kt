@@ -1634,7 +1634,8 @@ fun DialogInfoPeso(salirInfoPeso: () -> Unit) {
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Continuar"
+                        text = "Continuar",
+                        color = Color.White
                     )
                 }
 
@@ -1713,7 +1714,8 @@ fun DialogInfoAltura(salirInfoAltura: () -> Unit) {
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Continuar"
+                        text = "Continuar",
+                        color = Color.White
                     )
                 }
 
@@ -1793,7 +1795,8 @@ fun DialogInfoGeneroYEdad(salirInfoGeneroYEdad:() -> Unit){
                     shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
-                        text = "Continuar"
+                        text = "Continuar",
+                        color = Color.White
                     )
                 }
 
