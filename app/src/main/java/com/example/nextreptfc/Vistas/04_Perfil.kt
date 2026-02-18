@@ -197,10 +197,16 @@ fun Perfil() {
     if (editarGeneroYEdad) {
         DialogGeneroYEdad(
             pulsarFuera = { editarGeneroYEdad = false },
-            infoGeneroYEdad = {},
+            infoGeneroYEdad = {mostrarInfoGeneroYEdad = true},
             guardarGeneroYAltura = { genero, edad ->
                 println("Genero y edad guardados: $genero, $edad")
             }
+        )
+    }
+    
+    if(mostrarInfoGeneroYEdad){
+        DialogInfoGeneroYEdad(
+            salirInfoGeneroYEdad = {mostrarInfoGeneroYEdad = false}
         )
     }
 
@@ -1367,7 +1373,7 @@ fun DialogAltura(
 fun DialogGeneroYEdad(
     pulsarFuera: () -> Unit,
     infoGeneroYEdad: () -> Unit,
-    guardarGeneroYAltura: (String, Int) -> Unit,
+    guardarGeneroYAltura: (String, String) -> Unit,
 ) {
     val generos = listOf("Masculino", "Femenino")
     val (opcionSeleccionada, gestionarOpcionSeleccionada) = remember { mutableStateOf(generos[0]) }     // Empieza con Masculino seleccionado
@@ -1523,7 +1529,7 @@ fun DialogGeneroYEdad(
                 ) {
                     // Guardar
                     Button(
-                        onClick = { guardarGeneroYAltura(opcionSeleccionada, 0) },
+                        onClick = { guardarGeneroYAltura(opcionSeleccionada, inputEdad) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                         ),
@@ -1693,7 +1699,7 @@ fun DialogInfoAltura(salirInfoAltura: () -> Unit) {
                                 "más energía en reposo, y necesitamos este dato para no darte menos comida de la que necesitas.\n \n" +
                                 "• Objetivos Reales: Nos permite sugerirte un peso objetivo que sea realista y sostenible para tu estructura física.\n",
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.Justify
                     )
                 }
@@ -1717,6 +1723,86 @@ fun DialogInfoAltura(salirInfoAltura: () -> Unit) {
     }
 }
 
+@Composable
+fun DialogInfoGeneroYEdad(salirInfoGeneroYEdad:() -> Unit){
+    Dialog(
+        onDismissRequest = { salirInfoGeneroYEdad() }
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "Info",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+
+                Text(
+                    text = "¿Por que necesitamos estos datos?",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.titleLarge
+
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Necesitamos estos datos para ajustar ciertos parametros:",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    Text(
+                        text = "• Tasa Metabólica Basal (TMB): Las ecuaciones médicas usan tu edad y sexo biológico " +
+                                "para determinar cuántas calorías quema tu cuerpo en reposo.\n \n" +
+                                "• Frecuencia Cardíaca Máxima: Necesitamos tu edad para calcular el límite máximo de pulsaciones. " +
+                                "Sin este parámetro, no podemos calcular tus zonas de esfuerzo.\n \n" +
+                                "• Ajuste Hormonal: Hombres y mujeres tienen distintos porcentajes de grasa esencial y músculo, " +
+                                "lo que altera el cálculo final de tus macronutrientes.\n",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Justify
+                    )
+                }
+
+
+                Button(
+                    onClick = { salirInfoGeneroYEdad() },     // Cuando pulse aqui saldrá del dialog informativo
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Continuar"
+                    )
+                }
+
+
+            }
+        }
+    }
+
+}
 
 @Preview
 @Composable
