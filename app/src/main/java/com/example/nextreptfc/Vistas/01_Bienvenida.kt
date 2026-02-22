@@ -44,7 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.nextreptfc.Modelo.CardCarrousel
+import com.example.nextreptfc.Modelo.Modelos.CardCarrousel
 import com.example.nextreptfc.R
 import com.example.nextreptfc.ViewModel.NextRepViewModel
 import com.example.nextreptfc.ui.theme.LightSurface

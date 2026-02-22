@@ -1,8 +1,8 @@
 package com.example.nextreptfc.ViewModel
 
 import androidx.lifecycle.ViewModel
-import com.example.nextreptfc.Modelo.CardCarrousel
 import com.example.nextreptfc.Modelo.ModeloNextRep
+import com.example.nextreptfc.Modelo.Modelos.CardCarrousel
 import com.example.nextreptfc.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

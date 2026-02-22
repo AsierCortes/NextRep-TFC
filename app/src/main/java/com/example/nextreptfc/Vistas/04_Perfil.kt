@@ -37,7 +37,6 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,7 +51,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.example.nextreptfc.Modelo.Modelos.NivelActividad
 import com.example.nextreptfc.R
 
 /*
@@ -125,6 +126,7 @@ import com.example.nextreptfc.R
 fun Perfil() {
     val state = rememberScrollState()   // Para que recuerde en que parte se encuentra
 
+    // Variables que se encargan de pintar los distintos dialogs
     var editarPeso by remember { mutableStateOf(false) }
     var mostrarInfoPeso by remember { mutableStateOf(false) }
 
@@ -133,6 +135,12 @@ fun Perfil() {
 
     var editarGeneroYEdad by remember { mutableStateOf(false) }
     var mostrarInfoGeneroYEdad by remember { mutableStateOf(false) }
+
+    var editarUnidadesMetricas by remember { mutableStateOf(false) }
+    var mostrarInfoUnidades by remember { mutableStateOf(false) }
+
+    var editarNivelActividad by remember { mutableStateOf(false) }
+    var mostrarInfoNivelActividad by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -154,9 +162,12 @@ fun Perfil() {
             MedidasYObjetivos(
                 editarPeso = { editarPeso = true },
                 editarAltura = { editarAltura = true },
-                editarGeneroYEdad = { editarGeneroYEdad = true }
+                editarGeneroYEdad = { editarGeneroYEdad = true },
+                editarNivelActividad = {editarNivelActividad = true}
             )
-            CuentaYAjustes()
+            CuentaYAjustes(
+                editarUnidadesMetricas = {editarUnidadesMetricas = true}
+            )
             ZonaPeligrosa()
         }
 
@@ -203,10 +214,37 @@ fun Perfil() {
             }
         )
     }
-    
     if(mostrarInfoGeneroYEdad){
         DialogInfoGeneroYEdad(
             salirInfoGeneroYEdad = {mostrarInfoGeneroYEdad = false}
+        )
+    }
+
+    // UNIDADES MÉTRICA
+    if(editarUnidadesMetricas){
+        DialogUnidades(
+            pulsarFuera = { editarUnidadesMetricas = false },
+            infoUnidades = { mostrarInfoUnidades = true },
+            guardarUnidades = { println("Unidades guardadas: $it") }
+        ) 
+    }
+    if(mostrarInfoUnidades){
+        DialogInfoUnidades(
+            salirInfoUnidades = { mostrarInfoUnidades = false }
+        )
+    }
+
+    // NIVEL ACTIVIDAD
+    if(editarNivelActividad){
+        DialogNivelActividad(
+            pulsarFuera = {editarNivelActividad = false},
+            infoActividad = {mostrarInfoNivelActividad = true},
+            guardarActividad = {println("Nivel de actividad seleccionado: $it. Multiplicador: ${it.multiplicador}")}
+        )
+    }
+    if(mostrarInfoNivelActividad){
+        DialogInfoNivelActividad(
+            salirInfoActividad = { mostrarInfoNivelActividad = false }
         )
     }
 
@@ -501,6 +539,7 @@ fun MedidasYObjetivos(
     editarPeso: () -> Unit,
     editarAltura: () -> Unit,
     editarGeneroYEdad: () -> Unit,
+    editarNivelActividad: () -> Unit
 
     ) {
     Column(
@@ -649,6 +688,7 @@ fun MedidasYObjetivos(
                             .padding(top = 10.dp, bottom = 10.dp)
                             .clickable {
                                 println("Editar Actividad")
+                                editarNivelActividad()
                             },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
@@ -810,7 +850,9 @@ fun MedidasYObjetivos(
 }
 
 @Composable
-fun CuentaYAjustes() {
+fun CuentaYAjustes(
+    editarUnidadesMetricas : () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth(0.9f),    // Para que sea igual de ancho que la tarjetas de arriba (IMC, KCAL, AGUA)
@@ -922,6 +964,7 @@ fun CuentaYAjustes() {
                             .padding(top = 10.dp, bottom = 10.dp)
                             .clickable {
                                 println("Editar Unidades")
+                                editarUnidadesMetricas()
                             },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
@@ -1565,6 +1608,270 @@ fun DialogGeneroYEdad(
 
 }
 
+@Composable
+fun DialogUnidades(
+    pulsarFuera: () -> Unit,
+    infoUnidades: () -> Unit,
+    guardarUnidades: (String) -> Unit,
+) {
+    val sistemas = listOf("Métrico (kg, cm, L)", "Imperial (lbs, in, gal)")
+    val (opcionSeleccionada, gestionarOpcionSeleccionada) = remember { mutableStateOf(sistemas[0]) } // Empieza con Métrico
+
+    Dialog(
+        onDismissRequest = { pulsarFuera() }    // Para salir
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),    // Ya se centra y no toca la card
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+
+                // Titulo e icono
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Sistema de Unidades",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    IconButton(
+                        onClick = { infoUnidades() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Info Unidades",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
+                }
+
+                // Radio Options
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectableGroup(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    sistemas.forEach { text ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp)
+                                .selectable(
+                                    selected = (text == opcionSeleccionada),
+                                    onClick = { gestionarOpcionSeleccionada(text) },
+                                    role = Role.RadioButton
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            RadioButton(
+                                selected = (text == opcionSeleccionada),
+                                onClick = null
+                            )
+                            Text(
+                                text = text,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                    }
+                }
+
+                // Botones
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)   // Un poco de espacio entre el btn y el texto
+                ) {
+                    // Guardar
+                    Button(
+                        onClick = { guardarUnidades(opcionSeleccionada) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Guardar",
+                            color = Color.White
+                        )
+                    }
+
+                    // Cancelar
+                    Button(
+                        onClick = { pulsarFuera() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Cancelar",
+                            color = Color.White
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DialogNivelActividad(
+    pulsarFuera: () -> Unit,
+    infoActividad: () -> Unit,
+    guardarActividad: (NivelActividad) -> Unit
+) {
+    // Iniciamos con Sedentario por defecto
+    val (opcionSeleccionada, gestionarOpcionSeleccionada) = remember { mutableStateOf(NivelActividad.SEDENTARIO) }
+
+    Dialog(
+        onDismissRequest = { pulsarFuera() }
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp), // Espaciado general
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                // HEADER: Título e Icono Info
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Nivel de Actividad",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    IconButton(onClick = { infoActividad() }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Info",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
+                }
+
+                // LISTA DE OPCIONES (RadioButtons)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectableGroup(),
+                    verticalArrangement = Arrangement.spacedBy(18.dp) // Separación entre opciones
+                ) {
+                    // Recorremos el Enum
+                    NivelActividad.entries.forEach { nivel ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .selectable(
+                                    selected = (nivel == opcionSeleccionada),
+                                    onClick = { gestionarOpcionSeleccionada(nivel) },
+                                    role = Role.RadioButton
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp) // Espacio entre RadioButton y Textos
+                        ) {
+                            // 1. El RadioButton
+                            RadioButton(
+                                selected = (nivel == opcionSeleccionada),
+                                onClick = null // Null por accesibilidad (lo maneja el Row)
+                            )
+
+                            // La Columna con los dos Textos
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                // Título
+                                Text(
+                                    text = nivel.titulo,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                // Descripción
+                                Text(
+                                    text = nivel.descripcion,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    lineHeight = 16.sp
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // BOTONES GUARDAR Y CANCELAR
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
+                ) {
+                    // Botón Guardar
+                    Button(
+                        onClick = { guardarActividad(opcionSeleccionada) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(text = "Guardar", color = Color.White)
+                    }
+
+                    // Botón Cancelar
+                    Button(
+                        onClick = { pulsarFuera() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(text = "Cancelar", color = Color.White)
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun DialogInfoPeso(salirInfoPeso: () -> Unit) {
@@ -1805,6 +2112,165 @@ fun DialogInfoGeneroYEdad(salirInfoGeneroYEdad:() -> Unit){
         }
     }
 
+}
+
+@Composable
+fun DialogInfoUnidades(salirInfoUnidades: () -> Unit) {
+    Dialog(
+        onDismissRequest = { salirInfoUnidades() }
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "Info",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+
+                Text(
+                    text = "Sistemas de Medida",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // SUBTÍTULO CAMBIADO
+                    Text(
+                        text = "Elige el estándar con el que te sientas más cómodo para registrar tus datos diarios:",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    // TEXTO EXPLICATIVO CAMBIADO CON LOS DOS SISTEMAS
+                    Text(
+                        text = "• Sistema Métrico: Es el estándar internacional. Utiliza Kilogramos (kg) para medir el peso corporal o los discos del gimnasio, Centímetros (cm) para la altura y Litros (L) para el consumo de agua.\n \n" +
+                                "• Sistema Imperial: Es el formato tradicional utilizado en Estados Unidos. Utiliza Libras (lbs) para medir el peso, Pulgadas y Pies (in/ft) para la altura y Galones u Onzas líquidas (gal/fl oz) para los líquidos.\n \n" +
+                                "Podrás cambiar esta configuración más adelante si lo necesitas.\n",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Justify
+                    )
+                }
+
+                Button(
+                    onClick = { salirInfoUnidades() },     // Cuando pulse aqui saldrá del dialog informativo
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Continuar",
+                        color = Color.White
+                    )
+                }
+
+            }
+        }
+    }
+}
+
+@Composable
+fun DialogInfoNivelActividad(salirInfoActividad: () -> Unit) {
+    Dialog(
+        onDismissRequest = { salirInfoActividad() }
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "Info",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+
+                // TÍTULO CAMBIADO
+                Text(
+                    text = "Nivel de Actividad",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // SUBTÍTULO CAMBIADO (El "Por qué")
+                    Text(
+                        text = "El nivel de actividad es el 'Factor Multiplicador'. Necesitamos este dato para saber cuántas calorías reales quemas en tu día a día:",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Justify
+                    )
+
+                    // TEXTO EXPLICATIVO CAMBIADO (Los niveles y conclusión)
+                    Text(
+                        text = "• Sedentario: Trabajo de oficina o en el que pasas la mayor parte del tiempo sentado, sin ejercicio extra.\n \n" +
+                                "• Ligeramente Activo: Caminas regularmente o haces ejercicio ligero de 1 a 3 días por semana.\n \n" +
+                                "• Moderadamente Activo: Entrenamiento constante o deportes de intensidad media de 3 a 5 días por semana.\n \n" +
+                                "• Muy Activo: Entrenamientos intensos de 6 a 7 días por semana o trabajos físicos.\n \n" +
+                                "• Extremadamente Activo: Dobles sesiones de entrenamiento diarias o trabajos de alta exigencia física (ej. albañil).\n \n" +
+                                "Elegir el nivel correcto asegura que no te falte ni te sobre energía en tu plan.",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Justify
+                    )
+                }
+
+                Button(
+                    onClick = { salirInfoActividad() },     // Cuando pulse aqui saldrá del dialog informativo
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Continuar",
+                        color = Color.White
+                    )
+                }
+
+            }
+        }
+    }
 }
 
 @Preview
