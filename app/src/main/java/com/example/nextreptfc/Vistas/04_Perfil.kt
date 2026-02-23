@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.nextreptfc.Modelo.Modelos.NivelActividad
+import com.example.nextreptfc.Modelo.Modelos.ObjetivoFisico
 import com.example.nextreptfc.R
 
 /*
@@ -142,6 +143,9 @@ fun Perfil() {
     var editarNivelActividad by remember { mutableStateOf(false) }
     var mostrarInfoNivelActividad by remember { mutableStateOf(false) }
 
+    var editarObjetivoFisico by remember { mutableStateOf(false) }
+    var mostrarInfoObjetivoFisico by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -163,7 +167,8 @@ fun Perfil() {
                 editarPeso = { editarPeso = true },
                 editarAltura = { editarAltura = true },
                 editarGeneroYEdad = { editarGeneroYEdad = true },
-                editarNivelActividad = {editarNivelActividad = true}
+                editarNivelActividad = {editarNivelActividad = true},
+                editarObjetivoFisico = {editarObjetivoFisico = true}
             )
             CuentaYAjustes(
                 editarUnidadesMetricas = {editarUnidadesMetricas = true}
@@ -178,7 +183,7 @@ fun Perfil() {
         DialogPeso(
             pulsarFuera = { editarPeso = false },
             guardarPeso = { pesoActualizado ->
-                println("Peso guardado: $pesoActualizado")
+                println("Peso guardado: $pesoActualizado");
             },
             infoPesoPulsado = { mostrarInfoPeso = true }
         )
@@ -246,6 +251,23 @@ fun Perfil() {
         DialogInfoNivelActividad(
             salirInfoActividad = { mostrarInfoNivelActividad = false }
         )
+    }
+
+
+    // OBJETIVO FÍSICO
+    if(editarObjetivoFisico){
+        DialogObjetivoFisico(
+            pulsarFuera = {editarObjetivoFisico = false},
+            infoObjetivo = {mostrarInfoObjetivoFisico = true},
+            guardarObjetivo = {
+                println("Objetivo seleccionado $it")
+            }
+        )
+    }
+    if(mostrarInfoObjetivoFisico){
+        DialogInfoObjetivoFisico(
+            salirInfoObjetivo = { mostrarInfoObjetivoFisico = false }
+        ) 
     }
 
 
@@ -539,7 +561,8 @@ fun MedidasYObjetivos(
     editarPeso: () -> Unit,
     editarAltura: () -> Unit,
     editarGeneroYEdad: () -> Unit,
-    editarNivelActividad: () -> Unit
+    editarNivelActividad: () -> Unit,
+    editarObjetivoFisico : () -> Unit
 
     ) {
     Column(
@@ -634,6 +657,7 @@ fun MedidasYObjetivos(
                             .padding(top = 10.dp, bottom = 10.dp)
                             .clickable {
                                 println("Editar Objetivo")
+                                editarObjetivoFisico()
                             },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
@@ -1254,7 +1278,7 @@ fun DialogPeso(
                 ) {
                     // Guardar
                     Button(
-                        onClick = { guardarPeso(pesoInput) },
+                        onClick = { guardarPeso(pesoInput); pulsarFuera() },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                         ),
@@ -1376,7 +1400,7 @@ fun DialogAltura(
                 ) {
                     // Guardar
                     Button(
-                        onClick = { guardarAltura(alturaInput) },
+                        onClick = { guardarAltura(alturaInput); pulsarFuera() },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                         ),
@@ -1572,7 +1596,7 @@ fun DialogGeneroYEdad(
                 ) {
                     // Guardar
                     Button(
-                        onClick = { guardarGeneroYAltura(opcionSeleccionada, inputEdad) },
+                        onClick = { guardarGeneroYAltura(opcionSeleccionada, inputEdad); pulsarFuera() },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                         ),
@@ -1706,7 +1730,7 @@ fun DialogUnidades(
                 ) {
                     // Guardar
                     Button(
-                        onClick = { guardarUnidades(opcionSeleccionada) },
+                        onClick = { guardarUnidades(opcionSeleccionada); pulsarFuera() },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                         ),
@@ -1847,7 +1871,7 @@ fun DialogNivelActividad(
                 ) {
                     // Botón Guardar
                     Button(
-                        onClick = { guardarActividad(opcionSeleccionada) },
+                        onClick = { guardarActividad(opcionSeleccionada); pulsarFuera() },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                         ),
@@ -1871,6 +1895,146 @@ fun DialogNivelActividad(
         }
     }
 }
+
+@Composable
+fun DialogObjetivoFisico(
+    pulsarFuera: () -> Unit,
+    infoObjetivo: () -> Unit,
+    guardarObjetivo: (ObjetivoFisico) -> Unit
+) {
+    // Iniciamos con Mantenimiento por defecto (o el que prefieras)
+    val (opcionSeleccionada, gestionarOpcionSeleccionada) = remember { mutableStateOf(ObjetivoFisico.MANTENIMIENTO) }
+
+    Dialog(
+        onDismissRequest = { pulsarFuera() }
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp), // Espaciado general
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                // HEADER: Título e Icono Info
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Objetivo Físico",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    IconButton(onClick = { infoObjetivo() }) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Info",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
+                }
+
+                // LISTA DE OPCIONES (RadioButtons)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .selectableGroup(),
+                    verticalArrangement = Arrangement.spacedBy(18.dp) // Separación entre opciones
+                ) {
+                    // Recorremos el Enum de Objetivos
+                    ObjetivoFisico.entries.forEach { objetivo ->
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .selectable(
+                                    selected = (objetivo == opcionSeleccionada),
+                                    onClick = { gestionarOpcionSeleccionada(objetivo) },
+                                    role = Role.RadioButton
+                                ),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp) // Espacio entre RadioButton y Textos
+                        ) {
+                            // 1. El RadioButton
+                            RadioButton(
+                                selected = (objetivo == opcionSeleccionada),
+                                onClick = null // Null por accesibilidad (lo maneja el Row)
+                            )
+
+                            // La Columna con los dos Textos
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                // Título
+                                Text(
+                                    text = objetivo.titulo,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                // Descripción
+                                Text(
+                                    text = objetivo.descripcion,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    lineHeight = 16.sp
+                                )
+                            }
+                        }
+                    }
+                }
+
+                // BOTONES GUARDAR Y CANCELAR
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
+                ) {
+                    // Botón Guardar
+                    Button(
+                        onClick = {
+                            guardarObjetivo(opcionSeleccionada)
+                            pulsarFuera()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(text = "Guardar", color = Color.White)
+                    }
+
+                    // Botón Cancelar
+                    Button(
+                        onClick = { pulsarFuera() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(text = "Cancelar", color = Color.White)
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 
 
 @Composable
@@ -2273,6 +2437,84 @@ fun DialogInfoNivelActividad(salirInfoActividad: () -> Unit) {
     }
 }
 
+@Composable
+fun DialogInfoObjetivoFisico(salirInfoObjetivo: () -> Unit) {
+    Dialog(
+        onDismissRequest = { salirInfoObjetivo() }
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "Info",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .size(26.dp)
+                )
+
+                Text(
+                    text = "Objetivo Físico",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Subtítulo neutro y directo
+                    Text(
+                        text = "El objetivo físico define la dirección del plan de entrenamiento y nutrición:",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Justify
+                    )
+
+                    // Definiciones objetivas
+                    Text(
+                        text = "• Perder Grasa: Consiste en reducir las reservas de grasa corporal manteniendo la mayor cantidad de masa muscular posible.\n \n" +
+                                "• Ganar Músculo: Busca el crecimiento estético y el aumento del volumen muscular a través de un consumo de energía mayor al gastado.\n \n" +
+                                "• Ganar Fuerza: Se centra en maximizar el peso levantado y el rendimiento físico general, sin priorizar el aumento de tamaño muscular.\n \n" +
+                                "• Mantenimiento: Consiste en mantener un equilibrio energético exacto. Es ideal para estabilizar el peso actual o para buscar una mejora gradual siendo principiante.",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Justify
+                    )
+                }
+
+                Button(
+                    onClick = { salirInfoObjetivo() },     // Cuando pulse aqui saldrá del dialog informativo
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Continuar",
+                        color = Color.White
+                    )
+                }
+
+            }
+        }
+    }
+}
 @Preview
 @Composable
 fun PreviewPerfil() {

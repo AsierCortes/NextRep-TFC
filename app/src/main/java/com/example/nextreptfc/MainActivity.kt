@@ -12,11 +12,25 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -53,7 +67,9 @@ fun Main() {
         // El Bottom bar se mostrara en todas las pantallas menos el de bienvenida, registro e inicio de sesión
         bottomBar = {
             if(rutaActual != "bienvenida" && rutaActual != "registro" && rutaActual != "iniciosesion")
-            BarraNavegacionInferior()
+            BarraNavegacionInferior(
+                cambiarVista = {}
+            )
         }
     ) { innerPadding ->
 
@@ -92,6 +108,97 @@ fun Main() {
 
 
 @Composable
-fun BarraNavegacionInferior() {
+fun BarraNavegacionInferior(cambiarVista : (String) -> Unit) {
+    var ejerciciosChecked by remember { mutableStateOf(false) }
+    var rutinasChecked by remember { mutableStateOf(false) }
+    var nutricionChecked by remember { mutableStateOf(false) }
+    var perfilChecked by remember { mutableStateOf(true) }
+
+    NavigationBar {
+        // EJERCICIOS
+        NavigationBarItem(
+            selected = ejerciciosChecked,
+            onClick = {
+                cambiarVista("ejercicios")
+                ejerciciosChecked = true
+                rutinasChecked = false
+                nutricionChecked = false
+                perfilChecked = false
+
+            },
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.pesa),
+                    contentDescription = "Icono pesa",
+                    modifier = Modifier.size(20.dp)
+                )
+                   },
+            label = { Text(text = "Ejercicios") }
+        )
+
+
+        // EJERCICIOS
+        NavigationBarItem(
+            selected = ejerciciosChecked,
+            onClick = {
+                cambiarVista("ejercicios")
+                ejerciciosChecked = true
+                rutinasChecked = false
+                nutricionChecked = false
+                perfilChecked = false
+
+            },
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.pesa),
+                    contentDescription = "Icono pesa",
+                    modifier = Modifier.size(20.dp)
+                )
+            },
+            label = { Text(text = "Ejercicios") }
+        )
+
+        // EJERCICIOS
+        NavigationBarItem(
+            selected = ejerciciosChecked,
+            onClick = {
+                cambiarVista("ejercicios")
+                ejerciciosChecked = true
+                rutinasChecked = false
+                nutricionChecked = false
+                perfilChecked = false
+
+            },
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.pesa),
+                    contentDescription = "Icono pesa",
+                    modifier = Modifier.size(20.dp)
+                )
+            },
+            label = { Text(text = "Ejercicios") }
+        )
+
+        // EJERCICIOS
+        NavigationBarItem(
+            selected = ejerciciosChecked,
+            onClick = {
+                cambiarVista("ejercicios")
+                ejerciciosChecked = true
+                rutinasChecked = false
+                nutricionChecked = false
+                perfilChecked = false
+
+            },
+            icon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.pesa),
+                    contentDescription = "Icono pesa",
+                    modifier = Modifier.size(20.dp)
+                )
+            },
+            label = { Text(text = "Ejercicios") }
+        )
+    }
 
 }
