@@ -266,7 +266,6 @@ fun Registro(irAIniciarSesion : () -> Unit, irAPerfil : () -> Unit) {
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.bodyMedium
 
-
                             )
 
                             TextField(

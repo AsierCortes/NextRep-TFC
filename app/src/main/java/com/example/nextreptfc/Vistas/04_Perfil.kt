@@ -48,6 +48,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -128,6 +130,10 @@ fun Perfil() {
     val state = rememberScrollState()   // Para que recuerde en que parte se encuentra
 
     // Variables que se encargan de pintar los distintos dialogs
+
+    var editarNickName by remember { mutableStateOf(false) }
+    var mostrarInfoNickName by remember { mutableStateOf(false) }
+
     var editarPeso by remember { mutableStateOf(false) }
     var mostrarInfoPeso by remember { mutableStateOf(false) }
 
@@ -146,6 +152,9 @@ fun Perfil() {
     var editarObjetivoFisico by remember { mutableStateOf(false) }
     var mostrarInfoObjetivoFisico by remember { mutableStateOf(false) }
 
+    var editarContrasena by remember { mutableStateOf(false) }
+    var cerrarSesion by remember { mutableStateOf(false) }
+    var eliminarCuenta by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -161,7 +170,9 @@ fun Perfil() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(30.dp)
         ) {
-            CardSuperiorFoto()
+            CardSuperiorFoto(
+                editarNickName = {editarNickName = true}
+            )
             DatosCalculados()
             MedidasYObjetivos(
                 editarPeso = { editarPeso = true },
@@ -171,12 +182,29 @@ fun Perfil() {
                 editarObjetivoFisico = {editarObjetivoFisico = true}
             )
             CuentaYAjustes(
-                editarUnidadesMetricas = {editarUnidadesMetricas = true}
+                editarUnidadesMetricas = {editarUnidadesMetricas = true},
+                editarContrasena = {editarContrasena = true}
             )
-            ZonaPeligrosa()
+            ZonaPeligrosa(
+                cerrarSesion = {cerrarSesion = true},
+                eliminarCuenta = {eliminarCuenta = true}
+            )
         }
 
     }
+
+    // NICKNAME
+    if(editarNickName){
+        DialogCambiarNickname(
+            pulsarFuera = {editarNickName = false},
+            guardarNickname = {nickname ->
+                println("Nuevo nickname: $nickname")
+            },
+            infoNicknamePulsado = {} // Ns si implementarlo
+        ) 
+    }
+
+
     // PESO
     // Ponemos el dialog fuera de la columna por limpieza
     if (editarPeso) {
@@ -270,11 +298,37 @@ fun Perfil() {
         ) 
     }
 
+    // CERRAR SESIÓN
+    if(cerrarSesion){
+        DialogCerrarSesion(
+            pulsarFuera = { cerrarSesion = false },
+            cerrarSesionConfirmado = { println("Cerrar Sesión Confirmado") }  // Implementar
+        )
+    }
+    // ELIMINAR CUENTA
+    if(eliminarCuenta){
+        DialogEliminarCuenta(
+            pulsarFuera = {eliminarCuenta = false},
+            eliminarCuentaConfirmado = { println("Se va a proceder a eliminar la cuenta") }
+        ) 
+    }
+
+    // EDITAR CONTRASEÑA
+    if(editarContrasena){
+        DialogCambiarContrasenia(
+            pulsarFuera = {editarContrasena = false},
+            guardarNuevaContrasenia = { contrasena ->
+                println("Contraseña nueva: $contrasena")
+            }
+        )
+    }
 
 }
 
 @Composable
-fun CardSuperiorFoto() {
+fun CardSuperiorFoto(
+    editarNickName : () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -332,11 +386,18 @@ fun CardSuperiorFoto() {
                             text = "@Asier.578"
                         )
                         Spacer(Modifier.padding(5.dp))
-                        Icon(
-                            painter = painterResource(id = R.drawable.lapizeditar),
-                            contentDescription = "editarnombreusuario",
-                            modifier = Modifier.size(20.dp)
-                        )
+                        IconButton(
+                            onClick = {
+                                editarNickName()    // Funcion lambda cambiar nombre
+                                println("Cambiar nombre usuario")
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.lapizeditar),
+                                contentDescription = "editarnombreusuario",
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
                     }
 
                 }
@@ -875,7 +936,8 @@ fun MedidasYObjetivos(
 
 @Composable
 fun CuentaYAjustes(
-    editarUnidadesMetricas : () -> Unit
+    editarUnidadesMetricas : () -> Unit,
+    editarContrasena : () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -1012,26 +1074,15 @@ fun CuentaYAjustes(
                             )
                         }
 
-                        // Icono y texto DER
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(5.dp)  // Un poco de espacio entre el icono y el text
-                        ) {
+                        // Icono der flecha
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = "Flecha der",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
 
-                            Text(
-                                text = "Métrico (Kg/Cm)",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                style = MaterialTheme.typography.titleMedium
-                            )
 
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                contentDescription = "Flecha der",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(20.dp)
-                            )
-
-                        }
                     }
 
                     HorizontalDivider(thickness = 2.dp)
@@ -1043,6 +1094,7 @@ fun CuentaYAjustes(
                             .padding(top = 10.dp, bottom = 10.dp)
                             .clickable {
                                 println("Cambiar contraseña")
+                                editarContrasena()
                             },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween    // Para que cada row este en una esquina
@@ -1096,7 +1148,10 @@ fun CuentaYAjustes(
 }
 
 @Composable
-fun ZonaPeligrosa() {
+fun ZonaPeligrosa(
+    cerrarSesion : () -> Unit,
+    eliminarCuenta : () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth(0.9f),    // Para que sea igual de ancho que la tarjetas de arriba (IMC, KCAL, AGUA)
@@ -1127,7 +1182,11 @@ fun ZonaPeligrosa() {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
-                            .padding(top = 10.dp, bottom = 10.dp),
+                            .padding(top = 10.dp, bottom = 10.dp)
+                            .clickable {
+                                println("Cerrar Sesión")
+                                cerrarSesion()
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
                     ) {
@@ -1153,7 +1212,11 @@ fun ZonaPeligrosa() {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth(0.9f) // Para que no toque la card
-                            .padding(top = 10.dp, bottom = 10.dp),
+                            .padding(top = 10.dp, bottom = 10.dp)
+                            .clickable {
+                                println("Eliminar Cuenta")
+                                eliminarCuenta()
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
                     ) {
@@ -1194,6 +1257,8 @@ fun ZonaPeligrosa() {
                             -> Button (Guardar)
                             -> Button (Cancelar)
  */
+
+
 @Composable
 fun DialogPeso(
     pulsarFuera: () -> Unit,
@@ -2034,9 +2099,598 @@ fun DialogObjetivoFisico(
     }
 }
 
+@Composable
+fun DialogCambiarNickname(
+    pulsarFuera: () -> Unit,
+    guardarNickname: (String) -> Unit,
+    infoNicknamePulsado: () -> Unit,
+) {
+    var nicknameInput by remember { mutableStateOf("") }
 
+    Dialog(
+        onDismissRequest = { pulsarFuera() }    // Cuando pulsa fuera de la card
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
 
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),    // Ya se centra y no toca la card
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
 
+                // Titulo e icono
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    // TÍTULO CAMBIADO
+                    Text(
+                        text = "Cambiar Nickname",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    IconButton(
+                        onClick = { infoNicknamePulsado() }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Info,
+                            contentDescription = "Info",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(24.dp)
+                        )
+                    }
+                }
+
+                // Textfield
+                OutlinedTextField(
+                    value = nicknameInput,
+                    onValueChange = { nicknameInput = it },
+                    label = { Text("Nuevo NickName") },
+                    placeholder = { Text("Ej: Asier.578") },
+                    singleLine = true,
+                    // Cambiado a KeyboardType.Text para permitir letras
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        cursorColor = MaterialTheme.colorScheme.primary,        // Cursor (Barra)
+                        focusedLabelColor = MaterialTheme.colorScheme.primary   // Color label
+                    )
+                )
+
+                // Botones
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    // Guardar
+                    Button(
+                        onClick = { guardarNickname(nicknameInput); pulsarFuera() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Guardar",
+                            color = Color.White
+                        )
+                    }
+
+                    Spacer(Modifier.padding(10.dp))
+
+                    // Cancelar
+                    Button(
+                        onClick = { pulsarFuera() },    // es considerado como pulsar fuera
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Cancelar",
+                            color = Color.White
+                        )
+                    }
+
+                }
+            }
+
+        }
+    }
+}
+
+@Composable
+fun DialogCerrarSesion(
+    pulsarFuera: () -> Unit,
+    cerrarSesionConfirmado: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = { pulsarFuera() }    // Cuando pulsa fuera de la card
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+
+                // Título en color rojo (Error)
+                Text(
+                    text = "Cerrar Sesión",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.error // Aplicado el color que pediste
+                )
+
+                // Textos explicativos
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "¿Seguro que quieres cerrar sesión?",
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Text(
+                        text = "Al cerrar sesión tendrás que volver a introducir tu correo electrónico y tu contraseña la próxima vez que quieras acceder a la aplicación.",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Justify
+                    )
+                }
+
+                // Botones
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
+                ) {
+                    // Botón Cerrar Sesión (Rojo/Error porque es destructivo)
+                    Button(
+                        onClick = {
+                            cerrarSesionConfirmado()
+                            pulsarFuera()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Cerrar Sesión",
+                            color = Color.White
+                        )
+                    }
+
+                    // Botón Cancelar (Primario porque es la opción "segura")
+                    Button(
+                        onClick = { pulsarFuera() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Cancelar",
+                            color = Color.White
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DialogEliminarCuenta(
+    pulsarFuera: () -> Unit,
+    eliminarCuentaConfirmado: () -> Unit
+) {
+    // Estados para los TextFields
+    var confirmacionInput by remember { mutableStateOf("") }
+    var contrasenaInput by remember { mutableStateOf("") }
+    var contrasenaOculta by remember { mutableStateOf(true) }
+
+    Dialog(
+        onDismissRequest = { pulsarFuera() }
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+
+                // Título en color rojo (Error)
+                Text(
+                    text = "Eliminar cuenta",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.error
+                )
+
+                // Textos explicativos
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "¿Seguro que quieres eliminar la cuenta?",
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.titleMedium,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Text(
+                        text = "Esta acción es irreversible. Se eliminará tu cuenta y toda la información relacionada, como entrenamientos, ejercicios, medidas y objetivos.",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Justify
+                    )
+                }
+
+                // Inputs de confirmación
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                ) {
+                    // Input: Palabra de confirmación
+                    Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                        Text(
+                            text = "Introduce \"Eliminar\" para confirmar:",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        OutlinedTextField(
+                            value = confirmacionInput,
+                            onValueChange = { confirmacionInput = it },
+                            placeholder = { Text("Eliminar") },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.error, // Rojo porque es una acción peligrosa
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                cursorColor = MaterialTheme.colorScheme.error
+                            )
+                        )
+                    }
+
+                    // Input: Contraseña
+                    Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                        Text(
+                            text = "Contraseña:",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        OutlinedTextField(
+                            value = contrasenaInput,
+                            onValueChange = { contrasenaInput = it },
+                            placeholder = { Text("Tu contraseña") },
+                            singleLine = true,
+
+                            /*
+                                Es una función de Android Jetpack Compose, te permite ocultar
+                                el texto que esta en el input por un caracter. En este caso
+                                esta puesto el predeterminado
+                                Y VisualTranformation.None cambia el texto a visible
+                             */
+
+                            visualTransformation = if (contrasenaOculta){
+                                PasswordVisualTransformation()
+                            } else {
+                                VisualTransformation.None
+                            },
+                            trailingIcon = {    // Se muestra al final del outlined
+                                IconButton(onClick = { contrasenaOculta = !contrasenaOculta }) {
+                                    Icon(
+                                        painter = painterResource(id = if (contrasenaOculta){
+                                            R.drawable.ojo
+                                        }else {
+                                            R.drawable.ojocerrado
+                                        }),
+                                        contentDescription = if (contrasenaOculta){
+                                            "Mostrar contraseña"
+                                        } else {
+                                            "Ocultar contraseña"
+                                               },
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.error,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                cursorColor = MaterialTheme.colorScheme.error
+                            )
+                        )
+                    }
+                }
+
+                // Botones
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
+                ) {
+                    // Botón Confirmar (Rojo)
+                    Button(
+                        onClick = {
+                            eliminarCuentaConfirmado()
+                            pulsarFuera()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Confirmar",
+                            color = Color.White
+                        )
+                    }
+
+                    // Botón Cancelar (Primario)
+                    Button(
+                        onClick = { pulsarFuera() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Cancelar",
+                            color = Color.White
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DialogCambiarContrasenia(
+    pulsarFuera: () -> Unit,
+    guardarNuevaContrasenia: (String) -> Unit
+) {
+    // Estados para el campo de la Contraseña Actual
+    var contrasenaActualInput by remember { mutableStateOf("") }
+    var contrasenaActualOculta by remember { mutableStateOf(true) }
+
+    // Estados para el campo de la Nueva Contraseña
+    var contrasenaNuevaInput by remember { mutableStateOf("") }
+    var contrasenaNuevaOculta by remember { mutableStateOf(true) }
+
+    Dialog(
+        onDismissRequest = { pulsarFuera() }
+    ) {
+        Card(
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp) // Mismo espaciado general
+            ) {
+
+                // Título
+                Text(
+                    text = "Cambiar Contraseña",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                // Texto explicativo
+                Text(
+                    text = "Para cambiar de contraseña has de introducir la contraseña anterior y la nueva.",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+
+                // Contenedor de los Inputs
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                ) {
+
+                    // Input 1: Contraseña Actual
+                    Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                        Text(
+                            text = "Contraseña Actual",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        OutlinedTextField(
+                            value = contrasenaActualInput,
+                            onValueChange = { contrasenaActualInput = it },
+                            placeholder = { Text("Tu contraseña actual") },
+                            singleLine = true,
+                            visualTransformation = if (contrasenaActualOculta){
+                                PasswordVisualTransformation()
+                            } else {
+                                VisualTransformation.None
+                            },
+                            trailingIcon = {
+                                IconButton(onClick = { contrasenaActualOculta = !contrasenaActualOculta }) {
+                                    Icon(
+                                        painter = painterResource(id = if (contrasenaActualOculta) {
+                                            R.drawable.ojo
+                                        } else {
+                                            R.drawable.ojocerrado
+                                        }),
+                                        contentDescription = if (contrasenaActualOculta) {
+                                            "Mostrar contraseña"
+                                        } else {
+                                            "Ocultar contraseña"
+                                        },
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                cursorColor = MaterialTheme.colorScheme.primary
+                            )
+                        )
+                    }
+
+                    // Input 2: Nueva Contraseña
+                    Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                        Text(
+                            text = "Nueva Contraseña",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        OutlinedTextField(
+                            value = contrasenaNuevaInput,
+                            onValueChange = { contrasenaNuevaInput = it },
+                            placeholder = { Text("Tu nueva contraseña") },
+                            singleLine = true,
+                            visualTransformation = if (contrasenaNuevaOculta){
+                                PasswordVisualTransformation()
+                            } else {
+                                VisualTransformation.None
+                            },
+                            trailingIcon = {
+                                IconButton(onClick = { contrasenaNuevaOculta = !contrasenaNuevaOculta }) {
+                                    Icon(
+                                        painter = painterResource(id = if (contrasenaNuevaOculta) {
+                                            R.drawable.ojo
+                                        } else {
+                                            R.drawable.ojocerrado
+                                        }),
+                                        contentDescription = if (contrasenaNuevaOculta) {
+                                            "Mostrar contraseña"
+                                        } else {
+                                            "Ocultar contraseña"
+                                        },
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                                cursorColor = MaterialTheme.colorScheme.primary
+                            )
+                        )
+                    }
+                }
+
+                // Botones
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally)
+                ) {
+                    // Botón Confirmar
+                    Button(
+                        onClick = {
+                            guardarNuevaContrasenia(contrasenaNuevaInput)
+                            pulsarFuera()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Confirmar",
+                            color = Color.White
+                        )
+                    }
+
+                    // Botón Cancelar
+                    Button(
+                        onClick = { pulsarFuera() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                        ),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Text(
+                            text = "Cancelar",
+                            color = Color.White
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
 @Composable
 fun DialogInfoPeso(salirInfoPeso: () -> Unit) {
     Dialog(
